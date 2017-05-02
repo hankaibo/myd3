@@ -31,16 +31,12 @@ module.exports = function () {
       chunkFilename: isProd ? '[name].[chunkhash].js' : '[name].js',
       sourceMapFilename: '[name].map'
     },
-    // resolve: {
-    //   extensions: ['', '.ts', '.js', '.json'],
-    //   modules: [path.join(__dirname, 'src'), 'node_modules']
-    // },
+    resolve: {
+      extensions: ['.js', '.json'],
+      modules: [path.join(__dirname, 'src'), 'node_modules']
+    },
     module: {
       rules: [{
-        test: /\.ts$/,
-        use: ['awesome-typescript-loader', ],
-        exclude: [/\.(spec|e2e)\.ts$/]
-      }, {
         test: /\.css$/,
         use: ['to-string-loader', 'css-loader']
       }, {
