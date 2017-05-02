@@ -13,7 +13,7 @@ module.exports = function (env) {
   return webpackMerge(commonConig(), {
     devtool: 'cheap-module-source-map',
     devServer: {
-      port: 7777,
+      port: 8080,
       host: 'localhost',
       historyApiFallback: true,
       noInfo: false,
