@@ -4,210 +4,210 @@ var value = [{
     id: 1,
     ranking: 1,
     name: '猛龙',
-    img: '../../img/nba-1.png',
+    img: '/src/assets/img/nba-1.png',
     score: 30.1
   },
   {
     id: 2,
     ranking: 2,
     name: '火箭',
-    img: '../../img/nba-2.png',
+    img: '/src/assets/img/nba-2.png',
     score: 29
   },
   {
     id: 3,
     ranking: 3,
     name: '凯尔特',
-    img: '../../img/nba-3.png',
+    img: '/src/assets/img/nba-3.png',
     score: 28.1
   },
   {
     id: 4,
     ranking: 4,
     name: '超音速',
-    img: '../../img/nba-4.png',
+    img: '/src/assets/img/nba-4.png',
     score: 26.9
   },
   {
     id: 5,
     ranking: 5,
     name: '马刺',
-    img: '../../img/nba-5.png',
+    img: '/src/assets/img/nba-5.png',
     score: 25.3
   },
   {
     id: 6,
     ranking: 6,
     name: '太阳',
-    img: '../../img/nba-6.png',
+    img: '/src/assets/img/nba-6.png',
     score: 25.1
   },
   {
     id: 7,
     ranking: 7,
     name: '森林',
-    img: '../../img/nba-7.png',
+    img: '/src/assets/img/nba-7.png',
     score: 24.3
   },
   {
     id: 8,
     ranking: 8,
     name: '开拓者',
-    img: '../../img/nba-8.png',
+    img: '/src/assets/img/nba-8.png',
     score: 23.5
   },
   {
     id: 9,
     ranking: 9,
     name: '勇士',
-    img: '../../img/nba-9.png',
+    img: '/src/assets/img/nba-9.png',
     score: 23.5
   },
   {
     id: 10,
     ranking: 10,
     name: '奇才',
-    img: '../../img/nba-10.png',
+    img: '/src/assets/img/nba-10.png',
     score: 23.1
   },
   {
     id: 11,
     ranking: 11,
     name: '山猫',
-    img: '../../img/nba-11.png',
+    img: '/src/assets/img/nba-11.png',
     score: 22.2
   },
   {
     id: 12,
     ranking: 12,
     name: '雄鹿',
-    img: '../../img/nba-12.png',
+    img: '/src/assets/img/nba-12.png',
     score: 22.1
   },
   {
     id: 13,
     ranking: 13,
     name: '公牛',
-    img: '../../img/nba-13.png',
+    img: '/src/assets/img/nba-13.png',
     score: 21.8
   },
   {
     id: 14,
     ranking: 14,
     name: '骑士',
-    img: '../../img/nba-14.png',
+    img: '/src/assets/img/nba-14.png',
     score: 21.4
   },
   {
     id: 15,
     ranking: 15,
     name: '灰熊',
-    img: '../../img/nba-15.png',
+    img: '/src/assets/img/nba-15.png',
     score: 21.2
   },
   {
     id: 16,
     ranking: 16,
     name: '快船',
-    img: '../../img/nba-16.png',
+    img: '/src/assets/img/nba-16.png',
     score: 21.2
   },
   {
     id: 17,
     ranking: 17,
     name: '鹰',
-    img: '../../img/nba-17.png',
+    img: '/src/assets/img/nba-17.png',
     score: 20.9
   },
   {
     id: 18,
     ranking: 18,
     name: '网',
-    img: '../../img/nba-18.png',
+    img: '/src/assets/img/nba-18.png',
     score: 20.9
   },
   {
     id: 19,
     ranking: 19,
     name: '热',
-    img: '../../img/nba-19.png',
+    img: '/src/assets/img/nba-19.png',
     score: 20.8
   },
   {
     id: 20,
     ranking: 20,
     name: '黄蜂',
-    img: '../../img/nba-20.png',
+    img: '/src/assets/img/nba-20.png',
     score: 20.7
   },
   {
     id: 21,
     ranking: 21,
     name: '爵士',
-    img: '../../img/nba-21.png',
+    img: '/src/assets/img/nba-21.png',
     score: 20.1
   },
   {
     id: 22,
     ranking: 22,
     name: '国王',
-    img: '../../img/nba-22.png',
+    img: '/src/assets/img/nba-22.png',
     score: 19.1
   },
   {
     id: 23,
     ranking: 23,
     name: '尼克斯',
-    img: '../../img/nba-23.png',
+    img: '/src/assets/img/nba-23.png',
     score: 18.1
   },
   {
     id: 24,
     ranking: 24,
     name: '湖人',
-    img: '../../img/nba-24.png',
+    img: '/src/assets/img/nba-24.png',
     score: 17.1
   },
   {
     id: 25,
     ranking: 25,
     name: '魔术',
-    img: '../../img/nba-25.png',
+    img: '/src/assets/img/nba-25.png',
     score: 16.1
   },
   {
     id: 26,
     ranking: 26,
     name: '小牛',
-    img: '../../img/nba-26.png',
+    img: '/src/assets/img/nba-26.png',
     score: 15.1
   },
   {
     id: 27,
     ranking: 27,
     name: '76人',
-    img: '../../img/nba-27.png',
+    img: '/src/assets/img/nba-27.png',
     score: 14.1
   },
   {
     id: 28,
     ranking: 28,
     name: '掘金',
-    img: '../../img/nba-28.png',
+    img: '/src/assets/img/nba-28.png',
     score: 13.1
   },
   {
     id: 29,
     ranking: 29,
     name: '步行者',
-    img: '../../img/nba-29.png',
+    img: '/src/assets/img/nba-29.png',
     score: 12.1
   },
   {
     id: 30,
     ranking: 30,
     name: '活塞',
-    img: '../../img/nba-30.png',
+    img: '/src/assets/img/nba-30.png',
     score: 11.1
   },
 ]
@@ -216,7 +216,7 @@ var circle1 = ringSingle()
   .value(value.slice(0, 30)) // 小球数据，默认无
   .isClockwise(true)
   .orbitWidth(0) // 小球外切轨道的宽度，默认1
-  // .orbitColor(['#5185dd', 'red']) // 小球外切轨道的颜色，默认[]，如果不设置则使用彩虹色
+  .orbitColor(['#5185dd', 'red']) // 小球外切轨道的颜色，默认[]，如果不设置则使用彩虹色
   .ballNum(36) // 小球外切轨道显示多少个小球，默认12
   .ballSize([12, 24]) // 小球的半径从小到大，默认[12,24]
   .ballUseImg(true)

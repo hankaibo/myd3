@@ -446,7 +446,8 @@ exports = module.exports = function () {
         dom.append('g')
           .append('circle')
           .attr('class', 'sun')
-          .attr('r', radii.rectArea / 2);
+          .attr('r', radii.rectArea / 2)
+          .attr('fill', 'transparent');
       }
 
     });
