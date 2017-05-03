@@ -8,10 +8,12 @@ const webpack = require('webpack');
 /*
  * Webpack Plugins
  */
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpackMerge = require('webpack-merge');
 
 module.exports = function (env) {
   return webpackMerge(commonConfig(), {
+    devtool: 'source-map',
     plugins: [
       new webpack.LoaderOptionsPlugin({
         minimize: true,
@@ -32,7 +34,14 @@ module.exports = function (env) {
           screw_ie8: true
         },
         comments: false
-      })
+      }),
+      new CopyWebpackPlugin([{
+        from: 'src/assets/',
+        to: 'assets'
+      },{
+        from:'src/meta',
+        to:'meta'
+      }])
     ]
   })
 };
