@@ -4,210 +4,210 @@ var value = [{
     id: 1,
     ranking: 1,
     name: '猛龙',
-    img: '/src/assets/img/nba-1.png',
+    img: '/assets/img/nba-1.png',
     score: 30.1
   },
   {
     id: 2,
     ranking: 2,
     name: '火箭',
-    img: '/src/assets/img/nba-2.png',
+    img: '/assets/img/nba-2.png',
     score: 29
   },
   {
     id: 3,
     ranking: 3,
     name: '凯尔特',
-    img: '/src/assets/img/nba-3.png',
+    img: '/assets/img/nba-3.png',
     score: 28.1
   },
   {
     id: 4,
     ranking: 4,
     name: '超音速',
-    img: '/src/assets/img/nba-4.png',
+    img: '/assets/img/nba-4.png',
     score: 26.9
   },
   {
     id: 5,
     ranking: 5,
     name: '马刺',
-    img: '/src/assets/img/nba-5.png',
+    img: '/assets/img/nba-5.png',
     score: 25.3
   },
   {
     id: 6,
     ranking: 6,
     name: '太阳',
-    img: '/src/assets/img/nba-6.png',
+    img: '/assets/img/nba-6.png',
     score: 25.1
   },
   {
     id: 7,
     ranking: 7,
     name: '森林',
-    img: '/src/assets/img/nba-7.png',
+    img: '/assets/img/nba-7.png',
     score: 24.3
   },
   {
     id: 8,
     ranking: 8,
     name: '开拓者',
-    img: '/src/assets/img/nba-8.png',
+    img: '/assets/img/nba-8.png',
     score: 23.5
   },
   {
     id: 9,
     ranking: 9,
     name: '勇士',
-    img: '/src/assets/img/nba-9.png',
+    img: '/assets/img/nba-9.png',
     score: 23.5
   },
   {
     id: 10,
     ranking: 10,
     name: '奇才',
-    img: '/src/assets/img/nba-10.png',
+    img: '/assets/img/nba-10.png',
     score: 23.1
   },
   {
     id: 11,
     ranking: 11,
     name: '山猫',
-    img: '/src/assets/img/nba-11.png',
+    img: '/assets/img/nba-11.png',
     score: 22.2
   },
   {
     id: 12,
     ranking: 12,
     name: '雄鹿',
-    img: '/src/assets/img/nba-12.png',
+    img: '/assets/img/nba-12.png',
     score: 22.1
   },
   {
     id: 13,
     ranking: 13,
     name: '公牛',
-    img: '/src/assets/img/nba-13.png',
+    img: '/assets/img/nba-13.png',
     score: 21.8
   },
   {
     id: 14,
     ranking: 14,
     name: '骑士',
-    img: '/src/assets/img/nba-14.png',
+    img: '/assets/img/nba-14.png',
     score: 21.4
   },
   {
     id: 15,
     ranking: 15,
     name: '灰熊',
-    img: '/src/assets/img/nba-15.png',
+    img: '/assets/img/nba-15.png',
     score: 21.2
   },
   {
     id: 16,
     ranking: 16,
     name: '快船',
-    img: '/src/assets/img/nba-16.png',
+    img: '/assets/img/nba-16.png',
     score: 21.2
   },
   {
     id: 17,
     ranking: 17,
     name: '鹰',
-    img: '/src/assets/img/nba-17.png',
+    img: '/assets/img/nba-17.png',
     score: 20.9
   },
   {
     id: 18,
     ranking: 18,
     name: '网',
-    img: '/src/assets/img/nba-18.png',
+    img: '/assets/img/nba-18.png',
     score: 20.9
   },
   {
     id: 19,
     ranking: 19,
     name: '热',
-    img: '/src/assets/img/nba-19.png',
+    img: '/assets/img/nba-19.png',
     score: 20.8
   },
   {
     id: 20,
     ranking: 20,
     name: '黄蜂',
-    img: '/src/assets/img/nba-20.png',
+    img: '/assets/img/nba-20.png',
     score: 20.7
   },
   {
     id: 21,
     ranking: 21,
     name: '爵士',
-    img: '/src/assets/img/nba-21.png',
+    img: '/assets/img/nba-21.png',
     score: 20.1
   },
   {
     id: 22,
     ranking: 22,
     name: '国王',
-    img: '/src/assets/img/nba-22.png',
+    img: '/assets/img/nba-22.png',
     score: 19.1
   },
   {
     id: 23,
     ranking: 23,
     name: '尼克斯',
-    img: '/src/assets/img/nba-23.png',
+    img: '/assets/img/nba-23.png',
     score: 18.1
   },
   {
     id: 24,
     ranking: 24,
     name: '湖人',
-    img: '/src/assets/img/nba-24.png',
+    img: '/assets/img/nba-24.png',
     score: 17.1
   },
   {
     id: 25,
     ranking: 25,
     name: '魔术',
-    img: '/src/assets/img/nba-25.png',
+    img: '/assets/img/nba-25.png',
     score: 16.1
   },
   {
     id: 26,
     ranking: 26,
     name: '小牛',
-    img: '/src/assets/img/nba-26.png',
+    img: '/assets/img/nba-26.png',
     score: 15.1
   },
   {
     id: 27,
     ranking: 27,
     name: '76人',
-    img: '/src/assets/img/nba-27.png',
+    img: '/assets/img/nba-27.png',
     score: 14.1
   },
   {
     id: 28,
     ranking: 28,
     name: '掘金',
-    img: '/src/assets/img/nba-28.png',
+    img: '/assets/img/nba-28.png',
     score: 13.1
   },
   {
     id: 29,
     ranking: 29,
     name: '步行者',
-    img: '/src/assets/img/nba-29.png',
+    img: '/assets/img/nba-29.png',
     score: 12.1
   },
   {
     id: 30,
     ranking: 30,
     name: '活塞',
-    img: '/src/assets/img/nba-30.png',
+    img: '/assets/img/nba-30.png',
     score: 11.1
   },
 ]

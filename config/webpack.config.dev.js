@@ -15,6 +15,7 @@ module.exports = function (env) {
     devServer: {
       port: 8080,
       host: 'localhost',
+      contentBase: './src',
       historyApiFallback: true,
       noInfo: false,
       stats: 'minimal'

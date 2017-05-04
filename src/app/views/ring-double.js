@@ -1,0 +1,708 @@
+var d3 = require('d3');
+var ringDouble = require('../common/d3-ring-double');
+
+var value = [{
+    id: 0,
+    img: '/assets/img/sun.png',
+    name: '山东如意集团',
+    mark: 0
+  },
+  {
+    id: 1,
+    img: '/assets/img/2.png',
+    name: '山东济宁如意毛纺织股份有限公司',
+    mark: 1
+  },
+  {
+    id: 2,
+    img: '/assets/img/2.png',
+    name: '澳大利亚麦德国际贸易有限公司',
+    mark: 1
+  },
+  {
+    id: 3,
+    img: '/assets/img/2.png',
+    name: '山东济宁如意进出口有限公司',
+    mark: 1
+  },
+  {
+    id: 4,
+    img: '/assets/img/2.png',
+    name: '济宁如意投资有限公司',
+    mark: 1
+  },
+  {
+    id: 5,
+    img: '/assets/img/2.png',
+    name: '济宁如意印染有限公司',
+    mark: 1
+  },
+  {
+    id: 6,
+    img: '/assets/img/6.png',
+    name: '济宁如意技术咨询有限公司',
+    mark: 1
+  },
+  {
+    id: 7,
+    img: '/assets/img/2.png',
+    name: '济宁路嘉纳服装有限公司',
+    mark: 1
+  },
+  {
+    id: 8,
+    img: '/assets/img/2.png',
+    name: '重庆三峡技术纺织有限公司',
+    mark: 1
+  },
+  {
+    id: 9,
+    img: '/assets/img/2.png',
+    name: '济宁鲁意高新纤维材料有限公司',
+    mark: 1
+  },
+  {
+    id: 10,
+    img: '/assets/img/2.png',
+    name: '济宁如意针织有限责任公司',
+    mark: 1
+  },
+  {
+    id: 11,
+    img: '/assets/img/1.png',
+    name: '山东樱花投资控股有限公司',
+    mark: 1
+  },
+  {
+    id: 12,
+    img: '/assets/img/2.png',
+    name: '山东济宁如意毛纺织股份有限公司',
+    mark: 1
+  },
+  {
+    id: 13,
+    img: '/assets/img/2.png',
+    name: '金乡金樱棉业有限公司',
+    mark: 1
+  },
+  {
+    id: 14,
+    img: '/assets/img/2.png',
+    name: '张家港保税区新乐毛纺织造有限公司',
+    mark: 1
+  },
+  {
+    id: 15,
+    img: '/assets/img/1.png',
+    name: '青岛保税区如意投资有限公司',
+    mark: 1
+  },
+  {
+    id: 16,
+    img: '/assets/img/1.png',
+    name: '山东邹城建信村镇银行有限公司',
+    mark: 1
+  },
+  {
+    id: 17,
+    img: '/assets/img/2.png',
+    name: '伊藤忠（中国）集团有限公司',
+    mark: 1
+  },
+  {
+    id: 18,
+    img: '/assets/img/2.png',
+    name: '临邑澳泰纺织有限公司',
+    mark: 1
+  },
+  {
+    id: 19,
+    img: '/assets/img/2.png',
+    name: '伊藤忠商株式会社',
+    mark: 1
+  },
+  {
+    id: 20,
+    img: '/assets/img/2.png',
+    name: '重庆市万州区如意置业有限公司',
+    mark: 1
+  },
+  {
+    id: 21,
+    img: '/assets/img/2.png',
+    name: '济宁银行股份有限公司',
+    mark: 2
+  },
+  {
+    id: 22,
+    img: '/assets/img/1.png',
+    name: '新疆嘉和毛纺织有限公司',
+    mark: 2
+  },
+  {
+    id: 23,
+    img: '/assets/img/2.png',
+    name: '中国东方资管理公司',
+    mark: 2
+  },
+  {
+    id: 24,
+    img: '/assets/img/2.png',
+    name: '山东如意毛纺织集团总公司进出口总公司',
+    mark: 2
+  },
+  {
+    id: 25,
+    img: '/assets/img/2.png',
+    name: '内部职工股',
+    mark: 2
+  },
+  {
+    id: 26,
+    img: '/assets/img/2.png',
+    name: '国家股',
+    mark: 2
+  },
+  {
+    id: 27,
+    img: '/assets/img/2.png',
+    name: '山东如意置业有限公司',
+    mark: 2
+  },
+  {
+    id: 28,
+    img: '/assets/img/3.png',
+    name: '澳大利亚麦德国际贸易有限公司',
+    mark: 2
+  },
+  {
+    id: 29,
+    img: '/assets/img/4.png',
+    name: '郓城圣达如意印染有限公司',
+    mark: 2
+  },
+  {
+    id: 30,
+    img: '/assets/img/2.png',
+    name: '山东如意数码科技印染有限公司',
+    mark: 2
+  },
+  {
+    id: 31,
+    img: '/assets/img/2.png',
+    name: '济宁如意印染进出口有限公司',
+    mark: 2
+  },
+  {
+    id: 32,
+    img: '/assets/img/2.png',
+    name: '邯郸金宝隆印染有限公司',
+    mark: 2
+  },
+  {
+    id: 33,
+    img: '/assets/img/2.png',
+    name: '航天通信控股集团股份有限公司',
+    mark: 2
+  },
+  {
+    id: 34,
+    img: '/assets/img/user.png',
+    name: '孙俊贵',
+    mark: 2
+  },
+  {
+    id: 35,
+    img: '/assets/img/2.png',
+    name: '济宁如意印染有限公司工会委员会',
+    mark: 2
+  },
+  {
+    id: 36,
+    img: '/assets/img/user.png',
+    name: '顾金照',
+    mark: 2
+  },
+  {
+    id: 37,
+    img: '/assets/img/user.png',
+    name: '杜爱国',
+    mark: 2
+  },
+  {
+    id: 38,
+    img: '/assets/img/2.png',
+    name: '宁夏如意国际贸易有限公司',
+    mark: 2
+  },
+  {
+    id: 39,
+    img: '/assets/img/2.png',
+    name: '青岛如意恒成国际物流有限公司',
+    mark: 2
+  },
+  {
+    id: 40,
+    img: '/assets/img/2.png',
+    name: '意大利路嘉纳股份公司',
+    mark: 2
+  },
+  {
+    id: 41,
+    img: '/assets/img/2.png',
+    name: '山东樱花纺织集团有限公司',
+    mark: 2
+  },
+  {
+    id: 42,
+    img: '/assets/img/2.png',
+    name: '济宁世通物流有限公司',
+    mark: 2
+  },
+  {
+    id: 43,
+    img: '/assets/img/2.png',
+    name: '济宁永生重工机械制造有限公司',
+    mark: 2
+  },
+  {
+    id: 44,
+    img: '/assets/img/2.png',
+    name: '山东好德国际能源发展有限公司',
+    mark: 2
+  },
+  {
+    id: 45,
+    img: '/assets/img/1.png',
+    name: '山东宏河矿业集团有限公司',
+    mark: 2
+  },
+  {
+    id: 46,
+    img: '/assets/img/2.png',
+    name: '山东省天安矿业有限公司',
+    mark: 2
+  },
+  {
+    id: 47,
+    img: '/assets/img/5.png',
+    name: '山东天圆汇通科技有限公司',
+    mark: 2
+  },
+  {
+    id: 48,
+    img: '/assets/img/7.png',
+    name: '兖州煤业股份有限公司',
+    mark: 2
+  },
+  {
+    id: 49,
+    img: '/assets/img/2.png',
+    name: '中国建设银行股份有限公司',
+    mark: 2
+  },
+  {
+    id: 50,
+    img: '/assets/img/2.png',
+    name: '重庆市万州区鲁诚商贸有限公司',
+    mark: 2
+  },
+  {
+    id: 51,
+    img: '/assets/img/2.png',
+    name: '三星物产香港有限公司',
+    mark: 2
+  },
+  {
+    id: 52,
+    img: '/assets/img/2.png',
+    name: '三星物产株式会社',
+    mark: 2
+  },
+  {
+    id: 53,
+    img: '/assets/img/2.png',
+    name: '汶上如意技术纺织有限公司',
+    mark: 2
+  },
+  {
+    id: 54,
+    img: '/assets/img/user.png',
+    name: '李瑞忠',
+    mark: 2
+  },
+  {
+    id: 55,
+    img: '/assets/img/user.png',
+    name: '沈波',
+    mark: 2
+  },
+  {
+    id: 56,
+    img: '/assets/img/user.png',
+    name: '王戈',
+    mark: 2
+  },
+  {
+    id: 57,
+    img: '/assets/img/1.png',
+    name: '济宁市众信服装有限公司',
+    mark: 2
+  },
+  {
+    id: 58,
+    img: '/assets/img/1.png',
+    name: '澳大利亚麦德公司',
+    mark: 2
+  },
+  {
+    id: 59,
+    img: '/assets/img/1.png',
+    name: '山东省鲁信投资控股有限公司',
+    mark: 2
+  },
+  {
+    id: 60,
+    img: '/assets/img/1.png',
+    name: '济宁如意房地产开发有限公司',
+    mark: 2
+  },
+  {
+    id: 61,
+    img: '/assets/img/1.png',
+    name: '山东振鲁国际旅游航空服务有限公司',
+    mark: 2
+  },
+  {
+    id: 62,
+    img: '/assets/img/1.png',
+    name: '济宁如意物业管理有限公司',
+    mark: 2
+  },
+  {
+    id: 63,
+    img: '/assets/img/1.png',
+    name: '银川滨河如意服装有限公司',
+    mark: 2
+  },
+  {
+    id: 64,
+    img: '/assets/img/1.png',
+    name: '济宁市国有资产管理委员会',
+    mark: 2
+  },
+  {
+    id: 65,
+    img: '/assets/img/1.png',
+    name: '中国东方资产管理公司',
+    mark: 2
+  },
+  {
+    id: 66,
+    img: '/assets/img/2.png',
+    name: '无锡市新乐一碳毛纺有限公司',
+    mark: 2
+  }
+];
+var links = [{
+    source: 0,
+    target: 1
+  },
+  {
+    source: 2,
+    target: 0
+  },
+  {
+    source: 0,
+    target: 3
+  },
+  {
+    source: 4,
+    target: 0
+  },
+  {
+    source: 0,
+    target: 5
+  },
+  {
+    source: 0,
+    target: 6
+  },
+  {
+    source: 0,
+    target: 7
+  },
+  {
+    source: 0,
+    target: 8
+  },
+  {
+    source: 0,
+    target: 9
+  },
+  {
+    source: 0,
+    target: 10
+  },
+  {
+    source: 0,
+    target: 11
+  },
+  {
+    source: 0,
+    target: 12
+  },
+  {
+    source: 0,
+    target: 13
+  },
+  {
+    source: 0,
+    target: 14
+  },
+  {
+    source: 0,
+    target: 15
+  },
+  {
+    source: 0,
+    target: 16
+  },
+  {
+    source: 17,
+    target: 0
+  },
+  {
+    source: 0,
+    target: 18
+  },
+  {
+    source: 19,
+    target: 0
+  },
+  {
+    source: 0,
+    target: 20
+  },
+
+  {
+    source: 1,
+    target: 21
+  },
+  {
+    source: 22,
+    target: 1
+  },
+  {
+    source: 23,
+    target: 2
+  },
+  {
+    source: 24,
+    target: 2
+  },
+  {
+    source: 25,
+    target: 2
+  },
+  {
+    source: 26,
+    target: 3
+  },
+  {
+    source: 3,
+    target: 27
+  },
+  {
+    source: 4,
+    target: 28
+  },
+  {
+    source: 4,
+    target: 29
+  },
+  {
+    source: 4,
+    target: 30
+  },
+  {
+    source: 4,
+    target: 31
+  },
+  {
+    source: 5,
+    target: 32
+  },
+  {
+    source: 6,
+    target: 33
+  },
+  {
+    source: 6,
+    target: 34
+  },
+  {
+    source: 7,
+    target: 35
+  },
+  {
+    source: 7,
+    target: 36
+  },
+  {
+    source: 7,
+    target: 37
+  },
+  {
+    source: 8,
+    target: 38
+  },
+  {
+    source: 9,
+    target: 39
+  },
+  {
+    source: 9,
+    target: 40
+  },
+  {
+    source: 9,
+    target: 41
+  },
+  {
+    source: 10,
+    target: 42
+  },
+  {
+    source: 10,
+    target: 43
+  },
+  {
+    source: 10,
+    target: 44
+  },
+  {
+    source: 10,
+    target: 45
+  },
+  {
+    source: 10,
+    target: 46
+  },
+  {
+    source: 11,
+    target: 47
+  },
+  {
+    source: 12,
+    target: 48
+  },
+  {
+    source: 12,
+    target: 49
+  },
+  {
+    source: 12,
+    target: 50
+  },
+  {
+    source: 13,
+    target: 51
+  },
+  {
+    source: 14,
+    target: 52
+  },
+  {
+    source: 14,
+    target: 53
+  },
+  {
+    source: 14,
+    target: 54
+  },
+  {
+    source: 14,
+    target: 55
+  },
+  {
+    source: 14,
+    target: 56
+  },
+  {
+    source: 15,
+    target: 57
+  },
+  {
+    source: 16,
+    target: 58
+  },
+  {
+    source: 16,
+    target: 59
+  },
+  {
+    source: 17,
+    target: 60
+  },
+  {
+    source: 17,
+    target: 61
+  },
+  {
+    source: 17,
+    target: 62
+  },
+  {
+    source: 18,
+    target: 63
+  },
+  {
+    source: 19,
+    target: 64
+  },
+  {
+    source: 19,
+    target: 65
+  },
+  {
+    source: 19,
+    target: 66
+  }
+];
+
+var circle1 = ringDouble()
+  .backgroundColor('#ccc') //背景色
+  .value(value) // 小球数据，默认无
+  .link(links) // 小球之间连接线，默认无
+
+  .backgroundColorIn('#fff')
+  .orbitColor(['#5185dd', '#4199ca']) // 小球外切轨道的颜色，默认['#5185dd', '#4199ca']
+  .orbitWidth(0) // 小球外切轨道的宽度，默认1
+  .trackBall(20) // 小球外切轨道显示多少个小球，默认12
+  .ballSize([60, 60]) // 小球的半径从小到大，默认[12,24]
+  .ballTextOutSize(10) // 小球外文字大小，默认12
+  .ballTextOutColor('#000') // 小球外文字颜色
+  .firstQuadrantTextAnchor('start')
+  .secondQuadrantTextAnchor('start')
+  .thirdQuadrantTextAnchor('end')
+  .fourthQuadrantTextAnchor('end')
+
+  .backgroundColorOut('#fff')
+  .orbitColorOut(['#5185dd', '#4199ca']) //
+  .orbitWidthOut(0) //
+  .trackBallOut(50) //
+  .ballSizeOut([60, 60]) //
+  .ballTextOutSizeOut(12) //
+  .ballTextOutColorOut('#000')
+  .firstQuadrantTextAnchorOut('start')
+  .secondQuadrantTextAnchorOut('start')
+  .thirdQuadrantTextAnchorOut('end')
+  .fourthQuadrantTextAnchorOut('end')
+
+  .lightEffectImg('/assets/img/50_12.png')
+  .lightEffectWidth(50)
+  .lightEffectHeight(12);
+
+
+d3.select('.d3-circle-double').call(circle1);
