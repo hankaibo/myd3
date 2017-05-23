@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Layout</title>
+  <style>
+    /* common */
+
+    .wrap {
+      display: flex;
+      background-color: #093359;
+      width: 100%;
+      height: 600px;
+      padding: 100px 200px;
+      box-sizing: border-box;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    .flex-2 {
+      flex: 2;
+    }
+
+    .flex-4 {
+      flex: 4;
+    }
+
+    .margin-b-10 {
+      margin-bottom: 10px;
+    }
+
+    .margin-r-10 {
+      margin-right: 10px;
+    }
+
+    .margin-r-20 {
+      margin-right: 20px;
+    }
+    /* blue */
+
+    .blue {
+      flex: 4;
+      display: grid;
+      height: 100%;
+      min-width: 400px;
+      grid-template-columns: 1fr 10px 1fr 10px 1fr;
+      grid-template-rows: 2fr 10px 1fr 10px 1fr;
+      margin-right: 20px;
+    }
+
+    .blue .leaf {
+      background-color: #1375fc;
+    }
+
+    .blue .a {
+      grid-area: 1/1/2/4;
+    }
+
+    .blue .b {
+      grid-area: 1/5/4/6;
+    }
+
+    .blue .c {
+      grid-area: 3/1/6/2;
+    }
+
+    .blue .d {
+      grid-area: 5/3/6/6;
+    }
+
+    .blue .e {
+      grid-area: 3/3/4/4;
+    }
+    /* yellow */
+
+    .yellow {
+      flex: 2;
+      min-width: 200px;
+      display: flex;
+      flex-flow: column nowrap;
+      margin-right: 20px;
+    }
+
+    .yellow .leaf {
+      background-color: #e8970a;
+    }
+
+    .yellow .direction {
+      display: flex;
+      flex-direction: column;
+    }
+    /* green */
+
+    .green {
+      flex: 1;
+      min-width: 100px;
+      display: flex;
+      flex-flow: column nowrap;
+    }
+
+    .green .leaf {
+      background-color: #019273;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="blue">
+      <div class="a leaf">a</div>
+      <div class="b leaf">b</div>
+      <div class="c leaf">c</div>
+      <div class="d leaf">d</div>
+      <div class="e leaf">e</div>
+    </div>
+    <div class="yellow">
+      <div class="flex-1 leaf margin-b-10"></div>
+      <div class="flex-2 flex">
+        <div class="flex-1 leaf margin-r-10"></div>
+        <div class="flex-1 direction">
+          <div class="flex-1 leaf margin-b-10"></div>
+          <div class="flex-1 leaf"></div>
+        </div>
+      </div>
+    </div>
+    <div class="green">
+      <div class="flex-1 leaf margin-b-10"></div>
+      <div class="flex-2 leaf"></div>
+    </div>
+  </div>
+
+</body>
+
+</html>

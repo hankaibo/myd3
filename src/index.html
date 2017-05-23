@@ -9,18 +9,29 @@
   <link rel="icon" href="./assets/img/favicon.png">
   <link href="https://cdn.bootcss.com/normalize/7.0.0/normalize.css" rel="stylesheet">
   <style>
-    .wrap{
+    .wrap {
       width: 960px;
       margin: 0 auto;
     }
-    .box{
-      display:flex;
+
+    .box {
+      display: flex;
       flex-flow: row wrap;
-      justify-content: center;
+      justify-content: flex-start;
     }
-    .item{
-      display: inline-flex;
+
+    .item {
+      flex: 0 0 25%;
+      height: 100px;
+      border: 1px solid #ccc;
+      margin: 10px;
+      cursor: pointer;
     }
+
+    .item a {
+      text-decoration: none;
+    }
+
   </style>
 </head>
 
@@ -44,6 +55,9 @@
       </div>
       <div class="item">
         <a href="./app/views/force.html" target="_blank">force</a>
+      </div>
+      <div class="item">
+        <a href="./app/views/layout.html" target="_blank">布局</a>
       </div>
     </div>
   </div>

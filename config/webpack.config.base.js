@@ -32,7 +32,7 @@ module.exports = function () {
     chunkFilename: isProd ? 'app/views/[name].[chunkhash].js' : 'app/views/[name].js'
   };
   config.resolve = {
-    extensions: ['.js', '.json'],
+    extensions: ['.js', '.css', '.json'],
     modules: [helpers.root('../src'), 'node_modules']
   };
   config.module = {
