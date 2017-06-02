@@ -119,7 +119,7 @@ exports = module.exports = function () {
         .attr('text-anchor', labelTextAnchor);
 
       // 提示框效果
-      bar.selectAll('rect.bar')
+      bar.selectAll('rect.bar,rect.barBackgroundColor')
         .on('mouseenter', tip.show)
         .on('mouseleave', tip.hide);
 
