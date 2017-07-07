@@ -9,7 +9,6 @@ var glob = require('glob');
 
 /**
  *
- *
  * @param {any} args
  * @returns
  */
@@ -20,7 +19,6 @@ function root(args) {
 
 
 /**
- *
  *
  * @param {any} globPath
  * @param {any} pathDir

@@ -38,9 +38,9 @@ module.exports = function (env) {
       new CopyWebpackPlugin([{
         from: 'src/assets/',
         to: 'assets'
-      },{
-        from:'src/meta',
-        to:'meta'
+      }, {
+        from: 'src/meta',
+        to: 'meta'
       }])
     ]
   })
