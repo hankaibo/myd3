@@ -85,13 +85,27 @@ exports = module.exports = function () {
       var tip = d3.tip()
         .attr('class', 'd3-tip')
         .html(function (d) {
+          var isWeekend = d.data['isWeekend'];
+          var t0 = d.data[STACK_LABEL[0]];
+          var t1 = d.data[STACK_LABEL[1]];
           var t2 = d.data[STACK_LABEL[2]];
+          var t3 = d.data[STACK_LABEL[3]];
           var t4 = d.data[STACK_LABEL[4]];
           var t5 = d.data[STACK_LABEL[5]];
+          if (isWeekend && (t2 + t4) <= 0) {
+            return '<h3>' + d.data.xAxis + '<h3><p>周末休息</p>';
+          }
+          if (!isWeekend && (t2+t4) <= 0) {
+            return '<h3>' + d.data.xAxis + '<h3><p>今日未打卡</p>';
+          }
 
           var str = '<h3>' + d.data.xAxis + '<h3>' +
-            '<p><span>工作时间:</span>' + formatTime(t2 + t4) + '</p>' +
-            '<p><span>加班时间:</span>' + formatTime(t5) + '</p>';
+            '<p><span>工作时间:</span>' +
+            formatTime(t2 + t4) +
+            '(' + convert(t0 + t1) + '--' + convert(t0 + t1 + t2 + t3 + t4) + ')</p>' +
+            '<p><span>加班时间:</span>' +
+            formatTime(t5) +
+            '<small>(' + convert(t0 + t1 + t2 + t3 + t4) + '--' + convert(t0 + t1 + t2 + t3 + t4 + t5) + ')</small>' + '</p>';
           return str;
         });
       svg.call(tip);
@@ -169,8 +183,8 @@ exports = module.exports = function () {
     function type(data) {
       var result = [];
       for (var i = 0; i < data.values.length; i++) {
-        // var day = new Date(defaultYear + '-' + data.axisX[i]).getDay();
-        // var isWeekend = (day == 6 || day == 0) ? true : false;
+        var day = new Date(defaultYear + '-' + data.axisX[i]).getDay();
+        var isWeekend = (day == 6 || day == 0) ? true : false;
 
         // 0条就制造两条不能呈现图的数据；
         var len = data.values[i].length;
@@ -193,7 +207,7 @@ exports = module.exports = function () {
 
         var o = {
           xAxis: data.axisX[i],
-          // isWeekend: isWeekend,
+          isWeekend: isWeekend,
           all: ALL_MINUTE
         };
 
@@ -258,7 +272,33 @@ exports = module.exports = function () {
     }
 
     function formatTime(time) {
-      return ((time / 60).toPrecision(2)) + '小时';
+      var hour;
+      var minute;
+      hour = Math.floor(time / 60);
+      if (time % 60 === 0) {
+        minute = 0;
+      } else {
+        minute = time % 60;
+      }
+      if (hour === 0) {
+        return minute + '分钟';
+      } else if (hour !== 0 && minute === 0) {
+        return hour + '小时';
+      } else {
+        return hour + '小时' + minute + '分钟';
+      }
+    }
+
+    function convert(time) {
+      var hour;
+      var minute;
+      hour = Math.floor(time / 60);
+      if (time % 60 === 0) {
+        minute = 0;
+      } else {
+        minute = time % 60;
+      }
+      return hour + ':' + (minute < 10 ? ('0' + minute) : minute);
     }
 
     /**
