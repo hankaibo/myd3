@@ -102,10 +102,10 @@ exports = module.exports = function () {
           var str = '<h3>' + d.data.xAxis + '<h3>' +
             '<p><span>工作时间:</span>' +
             formatTime(t2 + t4) +
-            '(' + convert(t0 + t1) + '--' + convert(t0 + t1 + t2 + t3 + t4) + ')</p>' +
+            '<small>(' + convert(t0 + t1) + '--' + convert(t0 + t1 + t2 + t3 + t4) + ')</small></p>' +
             '<p><span>加班时间:</span>' +
             formatTime(t5) +
-            '<small>(' + convert(t0 + t1 + t2 + t3 + t4) + '--' + convert(t0 + t1 + t2 + t3 + t4 + t5) + ')</small>' + '</p>';
+            '<small>(' + convert(t0 + t1 + t2 + t3 + t4) + '--' + convert(t0 + t1 + t2 + t3 + t4 + t5) + ')</small></p>';
           return str;
         });
       svg.call(tip);
