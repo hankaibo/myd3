@@ -15,7 +15,19 @@ exports = module.exports = function () {
   };
 
   var data; // 数据
-  var stackColor = ['hsla(0,0%,0%,.1)', '#99ff33', '#33ff33', 'hsla(0,0%,0%,.1)', '#33ff33', '#ff3333', 'hsla(0,0%,0%,.1)'];
+  var stackColor = [
+    'hsla(0,0%,0%,.1)',
+    '#99ff33',
+    'hsla(0,0%,0%,.1)',
+    '#33ff33',
+    'hsla(0,0%,0%,.1)',
+    'hsla(0,0%,0%,.1)',
+    'hsla(0,0%,0%,.1)',
+    '#33ff33',
+    'hsla(0,0%,0%,.1)',
+    'yellow',
+    'hsla(0,0%,0%,.1)'
+  ];
   var stackPadding = 0.3;
   var stackAlign = 0.1;
 
@@ -43,15 +55,19 @@ exports = module.exports = function () {
   var HALF_MINUTE = 12 * 60; // 半天时间
   var AFTERNOON_START = HALF_MINUTE + restMinute; // 下午上班时间
   var AFTERNOON_END = workMinute + elasticStart + restMinute; // 下午下班最早时间
-  var STACK_LABEL = ['workBefore', 'workPre', 'workingAM', 'lunchTime', 'workingPM', 'workOver', 'workAfter'];
+  var STACK_LABEL = ['workBefore', 'workPre', 'workingAMLate', 'workingAM', 'workingAMEarly', 'lunchTime', 'workingPMLate', 'workingPM', 'workingPMEarly', 'workOver', 'workAfter'];
   var STACK_LABEL_ZH = {
-    'workBefore': 'Are you OK?',
-    'workPre': '工作预备时间',
+    'workBefore': '休息时间',
+    'workPre': '预备时间',
+    'workingAMLate': '上午迟到时间',
     'workingAM': '上午工作时间',
+    'workingAMEarly': '上午早退时间',
     'lunchTime': '午休时间',
+    'workingPMLate': '下午迟到时间',
     'workingPM': '下午工作时间',
+    'workingPMEarly': '下午早退时间',
     'workOver': '加班时间',
-    'workAfter': '下班'
+    'workAfter': '休息时间'
   };
 
   function chart(selection) {
@@ -86,26 +102,47 @@ exports = module.exports = function () {
         .attr('class', 'd3-tip')
         .html(function (d) {
           var isWeekend = d.data['isWeekend'];
-          var t0 = d.data[STACK_LABEL[0]];
-          var t1 = d.data[STACK_LABEL[1]];
-          var t2 = d.data[STACK_LABEL[2]];
-          var t3 = d.data[STACK_LABEL[3]];
-          var t4 = d.data[STACK_LABEL[4]];
-          var t5 = d.data[STACK_LABEL[5]];
-          if (isWeekend && (t2 + t4) <= 0) {
+          var t1 = d.data[STACK_LABEL[0]];
+          var t2 = d.data[STACK_LABEL[1]];
+          var t3 = d.data[STACK_LABEL[2]];
+          var t4 = d.data[STACK_LABEL[3]];
+          var t5 = d.data[STACK_LABEL[4]];
+          var t6 = d.data[STACK_LABEL[5]];
+          var t7 = d.data[STACK_LABEL[6]];
+          var t8 = d.data[STACK_LABEL[7]];
+          var t9 = d.data[STACK_LABEL[8]];
+          var t10 = d.data[STACK_LABEL[9]];
+          var t11 = d.data[STACK_LABEL[10]];
+          if (isWeekend && (t4 + t8) <= 0) {
             return '<h3>' + d.data.xAxis + '<h3><p>周末休息</p>';
           }
-          if (!isWeekend && (t2+t4) <= 0) {
+          if (!isWeekend && (t4 + t8) <= 0) {
             return '<h3>' + d.data.xAxis + '<h3><p>今日未打卡</p>';
           }
-
+          var startTime = 0;
+          var endTime = 0;
+          var addTime = 0;
+          if (t4 <= 0) {
+            startTime = HALF_MINUTE + t6 + t7;
+            endTime = startTime + t8;
+            addTime = t10 <= 0 ? endTime : (endTime + t9 + t10);
+          } else if (t8 <= 0) {
+            startTime = t1 + t2 + t3;
+            endTime = startTime + t4;
+            addTime = endTime;
+          } else {
+            startTime = t1 + t2 + t3;
+            endTime = HALF_MINUTE + t6 + t7 + t8;
+            addTime = t10 <= 0 ? endTime : (endTime + t9 + t10);
+          }
+          var addTimeStr = t10 > 0 ? (convert(endTime) + '--' + convert(addTime)) : 'none';
           var str = '<h3>' + d.data.xAxis + '<h3>' +
             '<p><span>工作时间:</span>' +
-            formatTime(t2 + t4) +
-            '<small>(' + convert(t0 + t1) + '--' + convert(t0 + t1 + t2 + t3 + t4) + ')</small></p>' +
+            formatTime(t4 + t8) +
+            '<small>(' + convert(startTime) + '--' + convert(endTime) + ')</small></p>' +
             '<p><span>加班时间:</span>' +
-            formatTime(t5) +
-            '<small>(' + convert(t0 + t1 + t2 + t3 + t4) + '--' + convert(t0 + t1 + t2 + t3 + t4 + t5) + ')</small></p>';
+            formatTime(t10) +
+            '<small>(' + addTimeStr + ')</small></p>';
           return str;
         });
       svg.call(tip);
@@ -185,88 +222,131 @@ exports = module.exports = function () {
       for (var i = 0; i < data.values.length; i++) {
         var day = new Date(defaultYear + '-' + data.axisX[i]).getDay();
         var isWeekend = (day == 6 || day == 0) ? true : false;
-
-        // 0条就制造两条不能呈现图的数据；
-        var len = data.values[i].length;
-        if (len == 0) {
-          data.values[i].push('24:00');
-          data.values[i].push('00:00');
-          len = 2;
-        }
-        // 1条就补一条相同的数据；
-        if (len == 1) {
-          data.values[i].push(data.values[i][0]);
-          len = 2;
-        }
-        // 2条及以上什么都不做；
-
-        var arr1 = data.values[i][0].split(':');
-        var arr2 = data.values[i][len - 1].split(':');
-        var t1 = parseInt(arr1[0]) * 60 + parseInt(arr1[1]);
-        var t2 = parseInt(arr2[0]) * 60 + parseInt(arr2[1]);
-
+        // tepm object
         var o = {
           xAxis: data.axisX[i],
           isWeekend: isWeekend,
           all: ALL_MINUTE
         };
 
-        var s0;
-        var s1;
-        var s2;
-        var s3;
-        var s4;
-        var s5;
-        var s6;
+        var len = data.values[i].length;
+        if (len >= 2) {
+          var arr1 = data.values[i][0].split(':');
+          var arr2 = data.values[i][len - 1].split(':');
+          var t1 = parseInt(arr1[0]) * 60 + parseInt(arr1[1]); // 上班打卡时间
+          var t2 = parseInt(arr2[0]) * 60 + parseInt(arr2[1]); // 下班打卡时间
 
-        // s0
-        if (t1 >= 0) {
-          s0 = t1;
-        }
-        // s1
-        if (t1 < elasticStart) {
-          s1 = (t2 > elasticStart ? elasticStart : t2) - t1;
+          var s1; // 休息时间
+          var s2; // 预备时间
+          var s3; // 上午迟到时间
+          var s4; // 上午工作时间
+          var s5; // 上午早退时间
+          var s6; // 午休时间
+          var s7; // 下午迟到时间
+          var s8; // 下午工作时间
+          var s9; // 下午早退时间
+          var s10; // 加班时间
+          var s11; // 休息时间
+
+          if (t1 < HALF_MINUTE) {
+            // s2
+            if (t1 < elasticStart) {
+              s2 = (t2 > elasticStart ? elasticStart : t2) - t1;
+            } else {
+              s2 = 0;
+            }
+            // s3
+            if (t1 > elasticEnd) {
+              s3 = t1 - elasticEnd;
+            } else {
+              s3 = 0;
+            }
+            // s4
+            if (t2 <= elasticStart) {
+              s4 = 0;
+            } else if (t1 <= elasticStart && t2 <= HALF_MINUTE) {
+              s4 = t2 - elasticStart;
+            } else if (t1 <= elasticStart && t2 > HALF_MINUTE) {
+              s4 = HALF_MINUTE - elasticStart;
+            } else if (t1 > elasticStart && t2 <= HALF_MINUTE) {
+              s4 = t2 - t1;
+            } else if (t1 > elasticStart && t2 > HALF_MINUTE) {
+              s4 = HALF_MINUTE - t1;
+            } else {
+              s4 = 0;
+            }
+            // s5
+            if (t2 < HALF_MINUTE) {
+              s5 = HALF_MINUTE - t2;
+            } else {
+              s5 = 0;
+            }
+            // s1
+            if (t1 >= 0) {
+              s1 = HALF_MINUTE - s2 - s3 - s4 - s5;
+            }
+          } else {
+            s1 = elasticEnd;
+            s2 = 0;
+            s3 = HALF_MINUTE - elasticEnd;
+            s4 = 0;
+            s5 = 0;
+          }
+          s6 = restMinute;
+          // s7
+          if (t1 > AFTERNOON_START && t1 < AFTERNOON_END + (elasticEnd - elasticStart)) {
+            s7 = t1 - AFTERNOON_START
+          } else if (t1 > AFTERNOON_END + (elasticEnd - elasticStart)) {
+            s7 = AFTERNOON_END + (elasticEnd - elasticStart) - AFTERNOON_START;
+          } else {
+            s7 = 0;
+          }
+          // s8
+          if (t2 <= AFTERNOON_START) {
+            s8 = 0;
+          } else {
+            s8 = (t2 - (t1 <= AFTERNOON_START ? AFTERNOON_START : t1) + s4 >= workMinute) ? (workMinute - s4) : (t2 - (t1 <= AFTERNOON_START ? AFTERNOON_START : t1));
+          }
+          // s10
+          if (s4 + s8 < workMinute) {
+            s10 = 0;
+          } else {
+            s10 = t2 - (t1 < elasticStart ? elasticStart : t1) - workMinute - restMinute;
+          }
+          // s11
+          if (t2 <= ALL_MINUTE) {
+            s11 = ALL_MINUTE - t2;
+          }
+          // s9
+          s9 = HALF_MINUTE - s6 - s7 - s8 - s10 - s11;
+
+          o[STACK_LABEL[0]] = s1;
+          o[STACK_LABEL[1]] = s2;
+          o[STACK_LABEL[2]] = s3;
+          o[STACK_LABEL[3]] = s4;
+          o[STACK_LABEL[4]] = s5;
+          o[STACK_LABEL[5]] = s6;
+          o[STACK_LABEL[6]] = s7;
+          o[STACK_LABEL[7]] = s8;
+          o[STACK_LABEL[8]] = s9;
+          o[STACK_LABEL[9]] = s10;
+          o[STACK_LABEL[10]] = s11;
+          console.log((s1 + s2 + s3 + s4 + s5) == (s11 + s10 + s6 + s7 + s8 + s9));
+          result.push(o);
         } else {
-          s1 = 0;
+          o[STACK_LABEL[0]] = HALF_MINUTE;
+          o[STACK_LABEL[1]] = 0;
+          o[STACK_LABEL[2]] = 0;
+          o[STACK_LABEL[3]] = 0;
+          o[STACK_LABEL[4]] = 0;
+          o[STACK_LABEL[5]] = 0;
+          o[STACK_LABEL[6]] = 0;
+          o[STACK_LABEL[7]] = 0;
+          o[STACK_LABEL[8]] = 0;
+          o[STACK_LABEL[9]] = 0;
+          o[STACK_LABEL[10]] = HALF_MINUTE;
+          result.push(o);
         }
-        // s2
-        if (t1 < HALF_MINUTE && t1 >= elasticStart) {
-          s2 = (t2 > HALF_MINUTE ? HALF_MINUTE : t2) - t1;
-        } else if (t1 < elasticStart) {
-          s2 = (t2 > HALF_MINUTE ? HALF_MINUTE : t2) - elasticStart;
-        } else {
-          s2 = 0;
-        }
-        // s3
-        if (t2 >= HALF_MINUTE) {
-          s3 = restMinute;
-        } else {
-          s3 = 0;
-        }
-        // s4
-        if (t2 < AFTERNOON_START) {
-          s4 = 0;
-        } else {
-          s4 = (t2 - AFTERNOON_START + s2 >= workMinute) ? (workMinute - s2) : (t2 - AFTERNOON_START);
-        }
-        // s5
-        if (s2 + s4 < workMinute) {
-          s5 = 0;
-        } else {
-          s5 = t2 - (t1 < elasticStart ? elasticStart : t1) - workMinute - restMinute;
-        }
-        // s6
-        if (t2 <= ALL_MINUTE) {
-          s6 = ALL_MINUTE - t2;
-        }
-        o[STACK_LABEL[0]] = s0;
-        o[STACK_LABEL[1]] = s1;
-        o[STACK_LABEL[2]] = s2;
-        o[STACK_LABEL[3]] = s3;
-        o[STACK_LABEL[4]] = s4;
-        o[STACK_LABEL[5]] = s5;
-        o[STACK_LABEL[6]] = s6;
-        result.push(o);
       }
       return result;
     }
