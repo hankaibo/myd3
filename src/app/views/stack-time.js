@@ -33,6 +33,20 @@ var data = {
 };
 d3.select('.time-stack').call(bar()
   .data(data)
+  .titleText('test_title')
+  .stackColor([
+    'hsla(0,0%,0%,.1)',
+    '#99ff33',
+    'hsla(0,0%,0%,.1)',
+    '#33ff33',
+    'hsla(0,0%,0%,.1)',
+    'hsla(0,0%,0%,.1)',
+    'hsla(0,0%,0%,.1)',
+    '#33ff33',
+    'hsla(0,0%,0%,.1)',
+    'yellow',
+    'hsla(0,0%,0%,.1)'
+  ])
   .stackLabelCustom({
     'workBefore': 'Are you Ready?'
   })

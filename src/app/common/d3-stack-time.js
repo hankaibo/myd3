@@ -1,51 +1,39 @@
-//
 var d3 = require('d3');
 var tip = require('d3-tip');
 d3.tip = tip;
 exports = module.exports = function () {
   'use strict';
-
   // Public variables with default settings
   var backgroundColor = '#f1f1f1';
   var padding = {
-    top: 20,
+    top: 40,
     rigth: 100,
     bottom: 30,
     left: 80
   };
-
-  var data; // 数据
-  var stackColor = [
-    'hsla(0,0%,0%,.1)',
-    '#99ff33',
-    'hsla(0,0%,0%,.1)',
-    '#33ff33',
-    'hsla(0,0%,0%,.1)',
-    'hsla(0,0%,0%,.1)',
-    'hsla(0,0%,0%,.1)',
-    '#33ff33',
-    'hsla(0,0%,0%,.1)',
-    'yellow',
-    'hsla(0,0%,0%,.1)'
-  ];
+  var data;
+  var stackColor = [];
   var stackPadding = 0.3;
   var stackAlign = 0.1;
-
+  var threshold = 6 * 60;
+  var titleText = 'title';
+  var titleTextX = 9;
+  var titleTextDY = '0.35em';
+  var titleTranslateX = 0;
+  var titleTranslateY = 0;
+  var titleColor = '#000';
+  var titleFontSize = '18';
   var xAxisNum = 24;
-
   var legendLineX1 = -6;
   var legendLineX2 = 6;
   var legendLineStroke = '#000';
   var legendTextX = 9;
   var legendTextDY = '0.35em';
   var legendTextColor = '#000';
-
   var lineColor = 'red';
   var lineWidth = 1;
-
   var stackLabelCustom = {};
   var defaultYear = new Date().getFullYear();
-
   var workMinute = 8 * 60; // 8工作时间
   var elasticStart = 8 * 60 + 30; // 弹性上班最早开始时间
   var elasticEnd = 9 * 60 + 30; // 弹性上班最晚开始时间
@@ -78,7 +66,10 @@ exports = module.exports = function () {
       var height = +svg.attr('height') - padding.top - padding.bottom;
       var chart = svg.append('g')
         .attr('fill', backgroundColor)
-        .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')');
+        .attr('transform', 'translate(' + padding.left + ',' + padding.top + ')')
+        .attr('viewbox', function () {
+          return (padding.left + ' ' + padding.top + ' ' + width + ' ' + height);
+        });
       // x比例尺
       var x = d3.scaleBand()
         .rangeRound([0, width])
@@ -179,6 +170,18 @@ exports = module.exports = function () {
         .attr('width', x.bandwidth())
         .on('mouseenter.tip', tip.show)
         .on('mouseleave.tip', tip.hide);
+      // 画标题
+      var title = chart.append('g')
+        .attr('class', 'title')
+        .attr('transform', function (d) {
+          return 'translate(' + (width / 2 + titleTranslateX) + ',' + (-padding.top / 2 + titleTranslateY) + ')';
+        });
+      title.append('text')
+        .attr('x', titleTextX)
+        .attr('dy', titleTextDY)
+        .attr('fill', titleColor)
+        .attr('fontSize', titleFontSize)
+        .text(titleText);
       // 画图例
       var legend = serie.append('g')
         .attr('class', 'legend')
@@ -222,7 +225,7 @@ exports = module.exports = function () {
       for (var i = 0; i < data.values.length; i++) {
         var day = new Date(defaultYear + '-' + data.axisX[i]).getDay();
         var isWeekend = (day == 6 || day == 0) ? true : false;
-        // tepm object
+        // object
         var o = {
           xAxis: data.axisX[i],
           isWeekend: isWeekend,
@@ -237,7 +240,7 @@ exports = module.exports = function () {
           var t2 = parseInt(arr2[0]) * 60 + parseInt(arr2[1]); // 下班打卡时间
 
           var s1; // 休息时间
-          var s2; // 预备时间
+          var s2; // 预备时间,(超过阈值当作加班时间)
           var s3; // 上午迟到时间
           var s4; // 上午工作时间
           var s5; // 上午早退时间
@@ -245,10 +248,92 @@ exports = module.exports = function () {
           var s7; // 下午迟到时间
           var s8; // 下午工作时间
           var s9; // 下午早退时间
-          var s10; // 加班时间
+          var s10; // 加班时间，非正常情况下特殊加班用
           var s11; // 休息时间
 
-          if (t1 < HALF_MINUTE) {
+          // 打卡时间段在最早打卡时间之前
+          if (t2 < elasticStart) {
+            s1 = t1;
+            s2 = t2 - t1;
+            s3 = 0;
+            s4 = 0;
+            s5 = 0;
+            s6 = 0;
+            s7 = 0;
+            s8 = 0;
+            s9 = 0;
+            s10 = 0;
+            s11;
+          }
+          if (t2 <= HALF_MINUTE) {
+            // s2
+            if (t1 < elasticStart) {
+              s2 = (t2 > elasticStart ? elasticStart : t2) - t1;
+            } else {
+              s2 = 0;
+            }
+            // s3
+            if (t1 > elasticEnd) {
+              s3 = t1 - elasticEnd;
+            } else {
+              s3 = 0;
+            }
+            // s4
+            if (t2 <= elasticStart) {
+              s4 = 0;
+            } else if (t1 <= elasticStart) {
+              s4 = t2 - elasticStart;
+            } else if (t1 > elasticStart) {
+              s4 = t2 - t1;
+            } else {
+              s4 = 0;
+            }
+            // s5
+            s5 = HALF_MINUTE - t2;
+            // s1
+            if (t1 >= 0) {
+              s1 = HALF_MINUTE - s2 - s3 - s4 - s5;
+            }
+            s6 = restMinute;
+            s7 = 0;
+            s8 = 0
+            s9 = 0;
+            s10 = 0;
+            s11 = HALF_MINUTE - restMinute;
+          } else if (t1 >= HALF_MINUTE) {
+            s1 = elasticEnd;
+            s2 = 0;
+            s3 = HALF_MINUTE - elasticEnd;
+            s4 = 0;
+            s5 = 0;
+            s6 = restMinute;
+            // s7
+            if (t1 > AFTERNOON_START && t1 < AFTERNOON_END + (elasticEnd - elasticStart)) {
+              s7 = t1 - AFTERNOON_START
+            } else if (t1 > AFTERNOON_END + (elasticEnd - elasticStart)) {
+              s7 = AFTERNOON_END + (elasticEnd - elasticStart) - AFTERNOON_START;
+            } else {
+              s7 = 0;
+            }
+            // s8
+            if (t2 <= AFTERNOON_START) {
+              s8 = 0;
+            } else {
+              s8 = (t2 - (t1 <= AFTERNOON_START ? AFTERNOON_START : t1) + s4 >= workMinute) ? (workMinute - s4) : (t2 - (t1 <= AFTERNOON_START ? AFTERNOON_START : t1));
+            }
+            // s10
+            if (s4 + s8 < workMinute) {
+              s10 = 0;
+            } else {
+              s10 = t2 - (t1 < elasticStart ? elasticStart : t1) - workMinute - restMinute;
+            }
+            // s11
+            if (t2 <= ALL_MINUTE) {
+              s11 = ALL_MINUTE - t2;
+            }
+            // s9
+            s9 = HALF_MINUTE - s6 - s7 - s8 - s10 - s11;
+          } else {
             // s2
             if (t1 < elasticStart) {
               s2 = (t2 > elasticStart ? elasticStart : t2) - t1;
@@ -285,40 +370,34 @@ exports = module.exports = function () {
             if (t1 >= 0) {
               s1 = HALF_MINUTE - s2 - s3 - s4 - s5;
             }
-          } else {
-            s1 = elasticEnd;
-            s2 = 0;
-            s3 = HALF_MINUTE - elasticEnd;
-            s4 = 0;
-            s5 = 0;
+            s6 = restMinute;
+            // s7
+            if (t1 > AFTERNOON_START && t1 < AFTERNOON_END + (elasticEnd - elasticStart)) {
+              s7 = t1 - AFTERNOON_START
+            } else if (t1 > AFTERNOON_END + (elasticEnd - elasticStart)) {
+              s7 = AFTERNOON_END + (elasticEnd - elasticStart) - AFTERNOON_START;
+            } else {
+              s7 = 0;
+            }
+            // s8
+            if (t2 <= AFTERNOON_START) {
+              s8 = 0;
+            } else {
+              s8 = (t2 - (t1 <= AFTERNOON_START ? AFTERNOON_START : t1) + s4 >= workMinute) ? (workMinute - s4) : (t2 - (t1 <= AFTERNOON_START ? AFTERNOON_START : t1));
+            }
+            // s10
+            if (s4 + s8 < workMinute) {
+              s10 = 0;
+            } else {
+              s10 = t2 - (t1 < elasticStart ? elasticStart : t1) - workMinute - restMinute;
+            }
+            // s11
+            if (t2 <= ALL_MINUTE) {
+              s11 = ALL_MINUTE - t2;
+            }
+            // s9
+            s9 = HALF_MINUTE - s6 - s7 - s8 - s10 - s11;
           }
-          s6 = restMinute;
-          // s7
-          if (t1 > AFTERNOON_START && t1 < AFTERNOON_END + (elasticEnd - elasticStart)) {
-            s7 = t1 - AFTERNOON_START
-          } else if (t1 > AFTERNOON_END + (elasticEnd - elasticStart)) {
-            s7 = AFTERNOON_END + (elasticEnd - elasticStart) - AFTERNOON_START;
-          } else {
-            s7 = 0;
-          }
-          // s8
-          if (t2 <= AFTERNOON_START) {
-            s8 = 0;
-          } else {
-            s8 = (t2 - (t1 <= AFTERNOON_START ? AFTERNOON_START : t1) + s4 >= workMinute) ? (workMinute - s4) : (t2 - (t1 <= AFTERNOON_START ? AFTERNOON_START : t1));
-          }
-          // s10
-          if (s4 + s8 < workMinute) {
-            s10 = 0;
-          } else {
-            s10 = t2 - (t1 < elasticStart ? elasticStart : t1) - workMinute - restMinute;
-          }
-          // s11
-          if (t2 <= ALL_MINUTE) {
-            s11 = ALL_MINUTE - t2;
-          }
-          // s9
-          s9 = HALF_MINUTE - s6 - s7 - s8 - s10 - s11;
 
           o[STACK_LABEL[0]] = s1;
           o[STACK_LABEL[1]] = s2;
@@ -440,6 +519,55 @@ exports = module.exports = function () {
       return stackAlign;
     }
     stackAlign = _;
+    return chart;
+  };
+  chart.titleText = function (_) {
+    if (!arguments.length) {
+      return titleText;
+    }
+    titleText = _;
+    return chart;
+  };
+  chart.titleTextX = function (_) {
+    if (!arguments.length) {
+      return titleTextX;
+    }
+    titleTextX = _;
+    return chart;
+  };
+  chart.titleTextDY = function (_) {
+    if (!arguments.length) {
+      return titleTextDY;
+    }
+    titleTextDY = _;
+    return chart;
+  };
+  chart.titleTranslateX = function (_) {
+    if (!arguments.length) {
+      return titleTranslateX;
+    }
+    titleTranslateX = _;
+    return chart;
+  };
+  chart.titleTranslateY = function (_) {
+    if (!arguments.length) {
+      return titleTranslateY;
+    }
+    titleTranslateY = _;
+    return chart;
+  };
+  chart.titleColor = function (_) {
+    if (!arguments.length) {
+      return titleColor;
+    }
+    titleColor = _;
+    return chart;
+  };
+  chart.titleFontSize = function (_) {
+    if (!arguments.length) {
+      return titleFontSize;
+    }
+    titleFontSize = _;
     return chart;
   };
   chart.xAxisNum = function (_) {
