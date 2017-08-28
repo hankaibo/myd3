@@ -14,7 +14,7 @@ exports = module.exports = function () {
   var data;
   var stackColor = [
     'hsla(0,0%,0%,.1)',
-    'yellow',
+    '#33ff33',
     'hsla(0,0%,0%,.1)',
     'red',
     '#33ff33',
@@ -23,7 +23,7 @@ exports = module.exports = function () {
     'red',
     '#33ff33',
     'yellow',
-    'blue',
+    '#33ff33',
     'hsla(0,0%,0%,.1)'
   ];
   var stackPadding = 0.3;
@@ -57,20 +57,21 @@ exports = module.exports = function () {
   var AFTERNOON_START = HALF_MINUTE + restMinute; // 下午上班时间
   var AFTERNOON_FIRST = workMinute + elasticFirst + restMinute; // 下午下班最早时间
   var AFTERNOON_LATEST = workMinute + elasticLatest + restMinute; // 下午下班最晚时间
-  var STACK_LABEL = ['workBefore', 'workPre', 'workingAMRest', 'workingAMLate', 'workingAM', 'workingAMEarly', 'lunchTime', 'workingPMLate', 'workingPM', 'workingPMEarly', 'workOver', 'workAfter'];
+  var STACK_LABEL = ['AMBefore', 'AMOver', 'AMRest', 'AMLate', 'AMWork', 'AMEarly', 'PMRest', 'PMLate', 'PMWork', 'PMEarly', 'PMOver', 'PMAfter'];
   var STACK_LABEL_ZH = {
-    'workBefore': '休息时间',
-    'workPre': '预备时间',
-    'workingAMRest': '上午休息时间',
-    'workingAMLate': '上午迟到时间',
-    'workingAM': '上午工作时间',
-    'workingAMEarly': '上午早退时间',
-    'lunchTime': '午休时间',
-    'workingPMLate': '下午迟到时间',
-    'workingPM': '下午工作时间',
-    'workingPMEarly': '下午早退时间',
-    'workOver': '加班时间',
-    'workAfter': '休息时间'
+    'AMBefore': '休息时间',
+    'AMOver': '加班时间',
+    'AMRest': '上午休息时间',
+    'AMLate': '上午迟到时间',
+    'AMWork': '上午工作时间',
+    'AMEarly': '上午早退时间',
+
+    'PMRest': '午休时间',
+    'PMLate': '下午迟到时间',
+    'PMWork': '下午工作时间',
+    'PMEarly': '下午早退时间',
+    'PMOver': '加班时间',
+    'PMAfter': '休息时间'
   };
 
   function chart(selection) {
@@ -109,47 +110,56 @@ exports = module.exports = function () {
         .attr('class', 'd3-tip')
         .html(function (d) {
           var isWeekend = d.data['isWeekend'];
-          var t1 = d.data[STACK_LABEL[0]];
-          var t2 = d.data[STACK_LABEL[1]];
-          var t3 = d.data[STACK_LABEL[2]];
-          var t4 = d.data[STACK_LABEL[3]];
-          var t5 = d.data[STACK_LABEL[4]];
-          var t6 = d.data[STACK_LABEL[5]];
-          var t7 = d.data[STACK_LABEL[6]];
-          var t8 = d.data[STACK_LABEL[7]];
-          var t9 = d.data[STACK_LABEL[8]];
-          var t10 = d.data[STACK_LABEL[9]];
-          var t11 = d.data[STACK_LABEL[10]];
-          if (isWeekend && (t4 + t8) <= 0) {
+          var t1 = d.data[STACK_LABEL[0]]; // 休息时间
+          var t2 = d.data[STACK_LABEL[1]]; // 上午加班时间
+          var t3 = d.data[STACK_LABEL[2]]; // 上午休息时间
+          var t4 = d.data[STACK_LABEL[3]]; // 上午迟到时间
+          var t5 = d.data[STACK_LABEL[4]]; // 上午工作时间
+          var t6 = d.data[STACK_LABEL[5]]; // 上午早退时间
+
+          var t7 = d.data[STACK_LABEL[6]]; // 下午休息时间
+          var t8 = d.data[STACK_LABEL[7]]; // 下午迟到时间
+          var t9 = d.data[STACK_LABEL[8]]; // 下午工作时间
+          var t10 = d.data[STACK_LABEL[9]]; // 下午早退时间
+          var t11 = d.data[STACK_LABEL[10]]; // 下午加班时间
+          var t12 = d.data[STACK_LABEL[11]]; // 休息时间
+          if (isWeekend && (t2 + t5 + t9 + t11) <= 0) {
             return '<h3>' + d.data.xAxis + '<h3><p>周末休息</p>';
           }
-          if (!isWeekend && (t4 + t8) <= 0) {
+          if (!isWeekend && (t2 + t5 + t9 + t11) <= 0) {
             return '<h3>' + d.data.xAxis + '<h3><p>今日未打卡</p>';
           }
           var startTime = 0;
           var endTime = 0;
-          var addTime = 0;
-          if (t4 <= 0) {
-            startTime = HALF_MINUTE + t6 + t7;
-            endTime = startTime + t8;
-            addTime = t10 <= 0 ? endTime : (endTime + t9 + t10);
-          } else if (t8 <= 0) {
-            startTime = t1 + t2 + t3;
-            endTime = startTime + t4;
-            addTime = endTime;
+          var amOverTime = 0;
+          var pmOverTime = 0;
+
+          // 上午之间打卡
+          if (t2 + t5 > 0) {
+            startTime = HALF_MINUTE - t5 - t6;
           } else {
-            startTime = t1 + t2 + t3;
-            endTime = HALF_MINUTE + t6 + t7 + t8;
-            addTime = t10 <= 0 ? endTime : (endTime + t9 + t10);
+            startTime = HALF_MINUTE + t7 + t8;
           }
-          var addTimeStr = t10 > 0 ? (convert(endTime) + '--' + convert(addTime)) : 'none';
+          endTime = HALF_MINUTE - t6 + t7 + t8 + t9;
+          amOverTime = t1;
+          pmOverTime = HALF_MINUTE + t7 + t9 + t11;
+
+          var amOverTimeStr = t2 > 0 ? (convert(amOverTime) + '--' + convert(startTime)) : 'none';
+          var pmOverTimeStr = t11 > 0 ? (convert(endTime) + '--' + convert(pmOverTime)) : 'none';
           var str = '<h3>' + d.data.xAxis + '<h3>' +
             '<p><span>工作时间:</span>' +
-            formatTime(t4 + t8) +
-            '<small>(' + convert(startTime) + '--' + convert(endTime) + ')</small></p>' +
-            '<p><span>加班时间:</span>' +
-            formatTime(t10) +
-            '<small>(' + addTimeStr + ')</small></p>';
+            formatTime(t5 + t9) +
+            '<small>(' + convert(startTime) + '--' + convert(endTime) + ')</small></p>';;
+          if (t2) {
+            str += '<p><span>上午加班时间:</span>' +
+              formatTime(t2) +
+              '<small>(' + amOverTimeStr + ')</small></p>'
+          }
+          if (t11) {
+            str += '<p><span>下午加班时间:</span>' +
+              formatTime(t11) +
+              '<small>(' + pmOverTimeStr + ')</small></p>'
+          }
           return str;
         });
       svg.call(tip);
@@ -199,21 +209,23 @@ exports = module.exports = function () {
         .attr('fontSize', titleFontSize)
         .text(titleText);
       // 画图例
-      var legend = serie.append('g')
-        .attr('class', 'legend')
-        .attr('transform', function (d) {
-          var d = d[d.length - 1];
-          return 'translate(' + (x(d.data.xAxis) + x.bandwidth()) + ',' + ((y(d[0]) + y(d[1])) / 2) + ')';
-        });
-      legend.append('line')
-        .attr('x1', legendLineX1)
-        .attr('x2', legendLineX2)
-        .attr('stroke', legendLineStroke);
-      legend.append('text')
-        .attr('x', legendTextX)
-        .attr('dy', legendTextDY)
-        .attr('fill', legendTextColor)
-        .text(function (d) { return stackLabelCustom[d.key] ? stackLabelCustom[d.key] : STACK_LABEL_ZH[d.key]; });
+      // var legend = serie.append('g')
+      //   .attr('class', 'legend')
+      //   .attr('transform', function (d) {
+      //     var d = d[d.length - 1];
+      //     return 'translate(' + (x(d.data.xAxis) + x.bandwidth()) + ',' + ((y(d[0]) + y(d[1])) / 2) + ')';
+      //   });
+      // legend.append('line')
+      //   .attr('x1', legendLineX1)
+      //   .attr('x2', legendLineX2)
+      //   .attr('stroke', legendLineStroke);
+      // legend.append('text')
+      //   .attr('x', legendTextX)
+      //   .attr('dy', legendTextDY)
+      //   .attr('fill', legendTextColor)
+      //   .text(function (d) {
+      //     return stackLabelCustom[d.key] ? stackLabelCustom[d.key] : STACK_LABEL_ZH[d.key];
+      //   });
       // 画坐标轴
       chart.append('g')
         .attr('class', 'axis axis--x')
@@ -224,7 +236,7 @@ exports = module.exports = function () {
         .call(d3.axisLeft(yTime).ticks(xAxisNum));
       // 画线
       drawLine(chart, y(elasticLatest / ALL_MINUTE), width);
-      drawLine(chart, y(AFTERNOON_LATEST / ALL_MINUTE), width);
+      drawLine(chart, y(AFTERNOON_FIRST / ALL_MINUTE), width);
 
     });
 
@@ -253,137 +265,139 @@ exports = module.exports = function () {
           var t1 = parseInt(arr1[0]) * 60 + parseInt(arr1[1]); // 上班打卡时间
           var t2 = parseInt(arr2[0]) * 60 + parseInt(arr2[1]); // 下班打卡时间
 
-          var workBefore; // 休息时间
-          var workPre; // 预备时间,(超过阈值当作加班时间)
-          var workingAMRest;// 上午休息时间
-          var workingAMLate; // 上午迟到时间
-          var workingAM; // 上午工作时间
-          var workingAMEarly; // 上午早退时间
+          var AMBefore = 0; // 休息时间
+          var AMOver = 0; // 预备时间,(超过阈值当作加班时间)
+          var AMRest = 0; // 上午休息时间
+          var AMLate = 0; // 上午迟到时间
+          var AMWork = 0; // 上午工作时间
+          var AMEarly = 0; // 上午早退时间
 
-          var lunchTime; // 午休时间
-          var workingPMLate; // 下午迟到时间
-          var workingPM; // 下午工作时间
-          var workingPMEarly; // 下午早退时间
-          var workOver; // 加班时间，非正常情况下特殊加班用
-          var workAfter; // 休息时间
+          var PMRest = 0; // 午休时间
+          var PMLate = 0; // 下午迟到时间
+          var PMWork = 0; // 下午工作时间
+          var PMEarly = 0; // 下午早退时间
+          var PMOver = 0; // 加班时间，非正常情况下特殊加班用
+          var PMAfter = 0; // 休息时间
 
           if (t2 <= elasticFirst) {
-            workBefore = t1;
-            workPre = t2 - t1;
-            workingAMRest = HALF_MINUTE - t2;
-            workingAMLate = 0;
-            workingAM = 0;
-            workingAMEarly = 0;
+            AMBefore = t1;
+            AMOver = t2 - t1;
+            AMRest = HALF_MINUTE - t2;
+            AMLate = 0;
+            AMWork = 0;
+            AMEarly = 0;
 
-            lunchTime = 0;
-            workingPMLate = 0;
-            workingPM = 0;
-            workingPMEarly = 0;
-            workOver = 0;
-            workAfter = HALF_MINUTE;
+            PMRest = 0;
+            PMLate = 0;
+            PMWork = 0;
+            PMEarly = 0;
+            PMOver = 0;
+            PMAfter = HALF_MINUTE;
           } else if (t2 <= HALF_MINUTE) {
-            workBefore = t1;
+            AMBefore = t1;
             if (t1 < elasticFirst) {
-              workPre = (t2 > elasticFirst ? elasticFirst : t2) - t1;
+              AMOver = elasticFirst - t1;
             } else {
-              workPre = 0;
+              AMOver = 0;
             }
-            workingAMRest = 0;
+            AMRest = 0;
             if (t1 > elasticLatest) {
-              workingAMLate = t1 - elasticLatest;
+              AMLate = t1 - elasticLatest;
             } else {
-              workingAMLate = 0;
+              AMLate = 0;
             }
             if (t1 <= elasticFirst) {
-              workingAM = t2 - elasticFirst;
+              AMWork = t2 - elasticFirst;
             } else if (t1 > elasticFirst) {
-              workingAM = t2 - t1;
+              AMWork = t2 - t1;
             } else {
-              workingAM = 0;
+              AMWork = 0;
             }
-            workingAMEarly = HALF_MINUTE - t2;
-            lunchTime = restMinute;
-            workingPMLate = 0;
-            workingPM = 0
-            workingPMEarly = 0;
-            workOver = 0;
-            workAfter = HALF_MINUTE - restMinute;
-          } else if (t2 <= AFTERNOON_START && t1 >= HALF_MINUTE) {
-            workBefore = HALF_MINUTE;
-            workPre = 0;
-            workingAMRest = 0;
-            workingAMLate = 0;
-            workingAM = 0;
-            workingAMEarly = 0;
-            lunchTime = restMinute;
-            workingPMLate = 0;
-            workingPM = 0;
-            workingPMEarly = 0;
-            workOver = 0;
-            workAfter = HALF_MINUTE - restMinute;
-          } else if (t1 > AFTERNOON_START) {
-            workBefore = HALF_MINUTE;
-            workPre = 0;
-            workingAMRest = 0;
-            workingAMLate = 0;
-            workingAM = 0;
-            workingAMEarly = 0;
-            lunchTime = restMinute;
-            workingPMLate = t1 - AFTERNOON_START;
-            workingPM = (t2 - t1 >= workMinute) ? workMinute : (t2 - t1);
-            workOver = (workingPM < workMinute) ? 0 : (t2 - t1 - workMinute - restMinute);
-            workAfter = ALL_MINUTE - t2;
-            workingPMEarly = HALF_MINUTE - lunchTime - workingPMLate - workingPM - workOver - workAfter;
-          } else if (t1 > AFTERNOON_LATEST) {
-            workBefore = HALF_MINUTE;
-            workPre = 0;
-            workingAMRest = 0;
-            workingAMLate = 0;
-            workingAM = 0;
-            workingAMEarly = 0;
+            AMEarly = HALF_MINUTE - t2;
 
-            lunchTime = restMinute;
-            workingPMLate = 0;
-            workingPM = 0;
-            workingPMEarly = 0;
-            workOver = t2 - t1;
-            workAfter = ALL_MINUTE - t2;
+            PMRest = 0;
+            PMLate = 0;
+            PMWork = 0
+            PMEarly = 0;
+            PMOver = 0;
+            PMAfter = HALF_MINUTE;
+          } else if (t2 <= AFTERNOON_START && t1 >= HALF_MINUTE) {
+            AMBefore = HALF_MINUTE;
+            AMOver = 0;
+            AMRest = 0;
+            AMLate = 0;
+            AMWork = 0;
+            AMEarly = 0;
+            PMRest = restMinute;
+            PMLate = 0;
+            PMWork = 0;
+            PMEarly = 0;
+            PMOver = 0;
+            PMAfter = HALF_MINUTE - restMinute;
+          } else if (t1 >= HALF_MINUTE) {
+            AMBefore = HALF_MINUTE;
+            AMOver = 0;
+            AMRest = 0;
+            AMLate = 0;
+            AMWork = 0;
+            AMEarly = 0;
+            PMRest = restMinute;
+            PMLate = t1 > AFTERNOON_START ? (t1 - AFTERNOON_START) : 0;
+            PMWork = (t2 - t1 >= workMinute) ? workMinute : (t2 - (t1 < AFTERNOON_START ? AFTERNOON_START : t1));
+            PMEarly = (t2 < AFTERNOON_FIRST) ? (AFTERNOON_FIRST - t2) : 0;
+            PMOver = (PMWork < workMinute) ? 0 : (AMWork - workMinute);
+            PMAfter = ALL_MINUTE - (t2 < AFTERNOON_START ? AFTERNOON_START : t2) - PMEarly;
+          } else if (t1 >= AFTERNOON_LATEST) {
+            AMBefore = HALF_MINUTE;
+            AMOver = 0;
+            AMRest = 0;
+            AMLate = 0;
+            AMWork = 0;
+            AMEarly = 0;
+            PMRest = HALF_MINUTE - PMOver - PMAfter;
+            PMLate = 0;
+            PMWork = 0;
+            PMEarly = 0;
+            PMOver = t2 - t1;
+            PMAfter = ALL_MINUTE - t2;
           } else {
-            workBefore = t1;
-            workPre = t1 > elasticFirst ? 0 : (elasticFirst - t1);
-            workingAMLate = t1 < elasticLatest ? 0 : t1 - elasticLatest;
-            workingAM = HALF_MINUTE - (t1 >= elasticFirst ? t1 : elasticFirst);
-            workingAMEarly = 0;
-            lunchTime = restMinute;
-            workingPMLate = t2 <= AFTERNOON_START ? 0 : t2 - AFTERNOON_START;
+            AMOver = t1 > elasticFirst ? 0 : (elasticFirst - t1);
+            AMRest = 0;
+            AMLate = t1 < elasticLatest ? 0 : t1 - elasticLatest;
+            AMWork = HALF_MINUTE - (t1 >= elasticFirst ? t1 : elasticFirst);
+            AMEarly = 0;
+            AMBefore = t1 - AMLate;
+
+            PMRest = restMinute;
+            PMLate = 0;
             if (t2 < AFTERNOON_START) {
-              workingPM = 0;
+              PMWork = 0;
             } else {
               var temp = t2 - (t1 < elasticFirst ? elasticFirst : t1) - restMinute;
-              workingPM = temp > workMinute ? (workMinute - workingAM) : (temp - workingAM);
+              PMWork = temp > workMinute ? (workMinute - AMWork) : (temp - AMWork);
             }
             if (t2 < AFTERNOON_LATEST) {
-              workingPMEarly = workMinute - workingAM - workingPM;
+              PMEarly = workMinute - AMWork - PMWork;
             } else {
-              workingPMEarly = 0;
+              PMEarly = 0;
             }
-            workOver = t2 - (t1 < elasticFirst ? elasticFirst : t1) - restMinute - workMinute;
-            workAfter = ALL_MINUTE - t2;
+            PMOver = (t2 - (t1 < elasticFirst ? elasticFirst : t1) - restMinute - workMinute) > 0 ? (t2 - (t1 < elasticFirst ? elasticFirst : t1) - restMinute - workMinute) : 0;
+            PMAfter = ALL_MINUTE - (t2 < AFTERNOON_START ? AFTERNOON_START : t2) - PMEarly;
           }
 
-          o[STACK_LABEL[0]] = workBefore;
-          o[STACK_LABEL[1]] = workPre;
-          o[STACK_LABEL[2]] = workingAMRest;
-          o[STACK_LABEL[3]] = workingAMLate;
-          o[STACK_LABEL[4]] = workingAM;
-          o[STACK_LABEL[5]] = workingAMEarly;
-          o[STACK_LABEL[6]] = lunchTime;
-          o[STACK_LABEL[7]] = workingPMLate;
-          o[STACK_LABEL[8]] = workingPM;
-          o[STACK_LABEL[9]] = workingPMEarly;
-          o[STACK_LABEL[10]] = workOver;
-          o[STACK_LABEL[11]] = workAfter;
-          console.log((workBefore + workPre + workingAMRest + workingAMLate + workingAM + workingAMEarly) == (workAfter + workOver + lunchTime + workingPMLate + workingPM + workingPMEarly));
+          o[STACK_LABEL[0]] = AMBefore;
+          o[STACK_LABEL[1]] = AMOver;
+          o[STACK_LABEL[2]] = AMRest;
+          o[STACK_LABEL[3]] = AMLate;
+          o[STACK_LABEL[4]] = AMWork;
+          o[STACK_LABEL[5]] = AMEarly;
+          o[STACK_LABEL[6]] = PMRest;
+          o[STACK_LABEL[7]] = PMLate;
+          o[STACK_LABEL[8]] = PMWork;
+          o[STACK_LABEL[9]] = PMEarly;
+          o[STACK_LABEL[10]] = PMOver;
+          o[STACK_LABEL[11]] = PMAfter;
+          console.log((AMBefore + AMOver + AMRest + AMLate + AMWork + AMEarly) == (PMAfter + PMOver + PMRest + PMLate + PMWork + PMEarly));
           result.push(o);
         } else {
           o[STACK_LABEL[0]] = HALF_MINUTE;
