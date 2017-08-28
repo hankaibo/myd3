@@ -1,6 +1,7 @@
 var d3 = require('d3');
 var tip = require('d3-tip');
 d3.tip = tip;
+// require('d3-svg-legend');
 exports = module.exports = function () {
   'use strict';
   // Public variables with default settings
@@ -226,6 +227,19 @@ exports = module.exports = function () {
       //   .text(function (d) {
       //     return stackLabelCustom[d.key] ? stackLabelCustom[d.key] : STACK_LABEL_ZH[d.key];
       //   });
+      // var ordinal = d3.scaleOrdinal()
+      //   .domain(['迟到', '工作', '早退', '休息'])
+      //   .range([stackColor[3], stackColor[4], stackColor[5]], stackColor[0]);
+      // chart.append('g')
+      //   .attr('class', 'legendOrdinal')
+      //   .attr('transform', 'translate(20,20');
+      // var legendOrdinal = d3.legendColor()
+      //   .shapeWidth(30)
+      //   .orient('horizontal')
+      //   .scale(ordinal);
+      // chart.select('.legendOrdinal')
+      //   .call(legendOrdinal);
+
       // 画坐标轴
       chart.append('g')
         .attr('class', 'axis axis--x')
