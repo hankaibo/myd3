@@ -363,9 +363,9 @@ exports = module.exports = function () {
             AMEarly = 0;
             PMRest = restMinute;
             PMLate = t1 > AFTERNOON_START ? (t1 - AFTERNOON_START) : 0;
-            PMWork = (t2 - t1 >= workMinute) ? workMinute : (t2 - (t1 < AFTERNOON_START ? AFTERNOON_START : t1));
+            PMWork = (t2 - (t1 < AFTERNOON_START ? AFTERNOON_START : t1) >= workMinute) ? workMinute : (t2 - (t1 < AFTERNOON_START ? AFTERNOON_START : t1));
             PMEarly = (t2 < AFTERNOON_FIRST) ? (AFTERNOON_FIRST - t2) : 0;
-            PMOver = (PMWork < workMinute) ? 0 : (AMWork - workMinute);
+            PMOver = (PMWork < workMinute) ? 0 : (t2 - (t1 < AFTERNOON_START ? AFTERNOON_START : t1) - workMinute);
             PMAfter = ALL_MINUTE - (t2 < AFTERNOON_START ? AFTERNOON_START : t2) - PMEarly;
           } else if (t1 >= AFTERNOON_LATEST) {
             AMBefore = HALF_MINUTE;
@@ -417,7 +417,7 @@ exports = module.exports = function () {
           o[STACK_LABEL[9]] = PMEarly;
           o[STACK_LABEL[10]] = PMOver;
           o[STACK_LABEL[11]] = PMAfter;
-          // console.log((AMBefore + AMOver+ AMRest + AMLate + AMWork + AMEarly) == (PMAfter + PMOver + PMRest + PMLate + PMWork + PMEarly));
+          console.log((AMBefore + AMOver+ AMRest + AMLate + AMWork + AMEarly) == (PMAfter + PMOver + PMRest + PMLate + PMWork + PMEarly));
           result.push(o);
         } else {
           o[STACK_LABEL[0]] = HALF_MINUTE;
