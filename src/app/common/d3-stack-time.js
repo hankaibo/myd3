@@ -228,7 +228,7 @@ exports = module.exports = function () {
       //   });
       var ordinal = d3.scaleOrdinal()
         .domain(['迟到', '工作', '早退', '休息'])
-        .range([stackColor[3], stackColor[4], stackColor[5]], stackColor[0]);
+        .range([stackColor[3], stackColor[4], stackColor[5], stackColor[0]]);
       chart.append('g')
         .attr('class', 'legendOrdinal')
         .attr('transform', 'translate(0,-40)');
