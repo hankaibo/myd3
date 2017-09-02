@@ -271,10 +271,17 @@ exports = module.exports = function () {
           all: ALL_MINUTE
         };
 
-        var len = data.values[i].length;
+        var originData = data.values[i];
+        var newData;
+        if (typeof originData == 'string') {
+          newData = originData.trim().split(' ');
+        } else {
+          newData = originData;
+        }
+        var len = newData.length;
         if (len >= 2) {
-          var arr1 = data.values[i][0].split(':');
-          var arr2 = data.values[i][len - 1].split(':');
+          var arr1 = newData[0].split(':');
+          var arr2 = newData[len - 1].split(':');
           var t1 = parseInt(arr1[0]) * 60 + parseInt(arr1[1]); // 上班打卡时间
           var t2 = parseInt(arr2[0]) * 60 + parseInt(arr2[1]); // 下班打卡时间
 
