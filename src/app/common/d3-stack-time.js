@@ -29,7 +29,6 @@ exports = module.exports = function () {
   ];
   var stackPadding = 0.3;
   var stackAlign = 0.1;
-  var threshold = 6 * 60;
   var titleText = 'title';
   var titleTextX = 9;
   var titleTextDY = '0.35em';
@@ -411,7 +410,7 @@ exports = module.exports = function () {
           o[STACK_LABEL[9]] = PMEarly;
           o[STACK_LABEL[10]] = PMOver;
           o[STACK_LABEL[11]] = PMAfter;
-          console.log((AMBefore + AMOver + AMRest + AMLate + AMWork + AMEarly) == (PMAfter + PMOver + PMRest + PMLate + PMWork + PMEarly));
+          // console.log((AMBefore + AMOver+ AMRest + AMLate + AMWork + AMEarly) == (PMAfter + PMOver + PMRest + PMLate + PMWork + PMEarly));
           result.push(o);
         } else {
           o[STACK_LABEL[0]] = HALF_MINUTE;
@@ -432,6 +431,12 @@ exports = module.exports = function () {
       return result;
     }
 
+    /**
+     * 分钟数转成时间，中文格式
+     *
+     * @param {any} time 分钟数
+     * @returns
+     */
     function formatTime(time) {
       var hour;
       var minute;
@@ -450,6 +455,12 @@ exports = module.exports = function () {
       }
     }
 
+    /**
+     * 分钟数转成时间
+     *
+     * @param {any} time 分钟数
+     * @returns
+     */
     function convert(time) {
       var hour;
       var minute;
