@@ -1,5 +1,5 @@
 var d3 = require('d3');
-var dashboard = require('../common/d3-dashboard');
+var dashboard = require('./d3-dashboard');
 d3.select('.d3-dashboard').call(dashboard()
   // 背景设置
   .width(600)

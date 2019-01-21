@@ -1314,7 +1314,7 @@ void function () {
       .on('click', function (d) {
         d3.select("h1").html(d.hero);
         d3.select("h2").html(d.name);
-        d3.select("h3").html("Take me to " + "<a href='" + d.link + "' >" + d.hero + " web page ⇢" + "</a>");
+        d3.select("h3").html("Take me to " + "<a href='" + d.link + "' >" + d.hero + " web public ⇢" + "</a>");
       })
 
       .on('mouseenter', function () {

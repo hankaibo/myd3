@@ -1,5 +1,5 @@
 var d3 = require('d3');
-var force = require('../common/d3-force2');
+var force = require('./d3-force2');
 
 var mockData = {
   "name": "marvel",

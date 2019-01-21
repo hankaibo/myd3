@@ -1,5 +1,5 @@
 var d3 = require('d3');
-var bar = require('../common/d3-stack-time');
+var bar = require('./d3-stack-time');
 
 var end = 25;
 var data = {

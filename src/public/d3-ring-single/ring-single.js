@@ -1,5 +1,5 @@
 var d3 = require('d3');
-var ringSingle = require('../common/d3-ring-single')
+var ringSingle = require('./d3-ring-single')
 var value = [{
     id: 1,
     ranking: 1,
