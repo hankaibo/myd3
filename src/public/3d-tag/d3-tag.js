@@ -103,7 +103,6 @@
         })
         .style('transform', function (d) {
           var rect = this.getBoundingClientRect();
-          console.log('width,height', rect.width, rect.height);
           var left = d.x + width / 2 - rect.width / 2 + 'px';
           var top = d.y + height / 2 - rect.height / 2 + 'px';
           var transform = 'translate(' + left + ',' + top + ') scale(' + (focal / (focal - d.z)) + ')';
@@ -135,7 +134,6 @@
         })
         .style('transform', function (d) {
           var rect = this.getBoundingClientRect();
-          console.log('width,height', rect.width, rect.height);
           var left = d.x + width / 2 - rect.width / 2 + 'px';
           var top = d.y + height / 2 - rect.height / 2 + 'px';
           var transform = 'translate(' + left + ',' + top + ') scale(' + focal / (focal - d.z) + ')';
