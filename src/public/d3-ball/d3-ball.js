@@ -29,17 +29,17 @@
   }
 }(typeof self !== 'undefined' ? self : this, function (d3) {
   // Use b in some fashion.
-  console.log(d3.version);
+  console.log('d3 version:' + d3.version);
   // Just return a value to define the module export.
   // This example returns an object, but the module
   // can return a function as the exported value.
   return function module() {
     // 公有属性
     var num = 100;
-    var radius = 200;
-    var r = 6.5;
-    var angleX = Math.PI / 1000;
-    var angleY = Math.PI / 1000;
+    var radius = 150;
+    var r = 3;
+    var rotateAngleX = 300;
+    var rotateAngleY = 300;
     var isrunning = true;
 
     // 私有属性
@@ -49,7 +49,9 @@
     var vpx;
     var vpy;
     var data;
-    var focal = 300;
+    var angleX = Math.PI / rotateAngleX;
+    var angleY = Math.PI / rotateAngleY;
+    var focal = 450;
 
     function chart(selection) {
       selection.each(function () {
@@ -62,8 +64,9 @@
         vpy = height / 2;
         svg.on('mousemove', function () {
           var e = d3.mouse(this);
-          var x = e[0] - vpx - document.body.scrollLeft - document.documentElement.scrollLeft;
-          var y = e[1] - vpy - document.body.scrollTop - document.documentElement.scrollTop;
+          var rect = this.getBoundingClientRect();
+          var x = e[0] - rect - left - vpx - document.body.scrollLeft - document.documentElement.scrollLeft;
+          var y = e[1] - rect.top - vpy - document.body.scrollTop - document.documentElement.scrollTop;
 
           angleX = -x * 0.0001;
           angleY = -y * 0.0001;
@@ -72,19 +75,22 @@
         svg.append('rect')
           .attrs({x: 0, y: 0, width: width, height: height, fill: 'block'});
 
+        draw();
         animate();
       });
     }
 
-    // 画点。
+    // 画点。也可以用translate实现。
     function draw() {
       var balls = svg.selectAll('circle')
         .data(data);
 
-      balls.exit()
+      balls
+        .exit()
         .remove();
 
-      balls.enter()
+      balls
+        .enter()
         .append('circle')
         .attr('cx', function (d) {
           return vpx + d.x;
@@ -93,18 +99,19 @@
           return vpy + d.y;
         })
         .attr('r', function (d) {
-          return d.r * (focal / (focal + d.z));
+          return d.r * (focal / (focal - d.z));
         })
         .attr('fill', 'rgb(255,255,255)');
 
-      balls.attr('cx', function (d) {
-        return vpx + d.x;
-      })
+      balls
+        .attr('cx', function (d) {
+          return vpx + d.x;
+        })
         .attr('cy', function (d) {
           return vpy + d.y;
         })
         .attr('r', function (d) {
-          return d.r * (focal / (focal + d.z));
+          return d.r * (focal / (focal - d.z));
         })
         .attr('fill', 'rgb(255,255,255)')
         .attr('opacity', function (d) {
@@ -118,6 +125,7 @@
         rotateX(data[i], angleX);
         rotateY(data[i], angleY);
       }
+      // 排序
       data.sort(function (a, b) {
         return b.z - a.z;
       });
@@ -127,7 +135,7 @@
     }
 
     // 绕x轴变化，得出新的y，z坐标
-    function rotateX(coordinate, angleX) {
+    function rotateX(coordinate) {
       var cosx = Math.cos(angleX);
       var sinx = Math.sin(angleX);
       var y1 = coordinate.y * cosx - coordinate.z * sinx;
@@ -138,7 +146,7 @@
     }
 
     // 绕x轴变化，得出新的y，z坐标
-    function rotateY(coordinate, angleY) {
+    function rotateY(coordinate) {
       var cosy = Math.cos(angleY);
       var siny = Math.sin(angleY);
       var x1 = coordinate.z * siny + coordinate.x * cosy;
@@ -151,14 +159,14 @@
     // 转换数据为均匀分布于球面上。
     function dataTransform(num) {
       var balls = [];
-      for (var i = 0; i < num; i++) {
-        var k = -1 + (2 * i + 1) / num;
+      for (var i = 1; i <= num; i++) {
+        var k = -1 + (2 * i - 1) / num;
         var phi = Math.acos(k);
         var theta = Math.sqrt(num * Math.PI) * phi;
         var x = radius * Math.cos(theta) * Math.sin(phi);
         var y = radius * Math.sin(theta) * Math.sin(phi);
         var z = radius * Math.cos(phi);
-        balls.push({x: x, y: y, z: z, r: r, width: 2 * r})
+        balls.push({x: x, y: y, z: z, r: r})
       }
       return balls;
     }
@@ -195,11 +203,26 @@
       r = _;
       return chart;
     };
+    chart.rotateAngleX = function (_) {
+      if (!arguments.length) {
+        return rotateAngleX;
+      }
+      rotateAngleX = _;
+      return chart;
+    };
+    chart.rotateAngleY = function (_) {
+      if (!arguments.length) {
+        return rotateAngleY;
+      }
+      rotateAngleY = _;
+      return chart;
+    };
     chart.isrunning = function (_) {
       if (!arguments.length) {
         return isrunning;
       }
       isrunning = _;
+      isrunning && animate();
       return chart;
     };
 
