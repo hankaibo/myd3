@@ -18,44 +18,42 @@
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(['d3'], factory);
-  } else if (typeof module === 'object' && module.exports) {
+  } else if (typeof module === 'object' && module.chart) {
     // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
+    // only CommonJS-like environments that support module.chart,
     // like Node.
-    module.exports = factory(require('d3'));
+    module.chart = factory(require('d3'));
   } else {
     // Browser globals (root is window)
-    root.ball = factory(root.d3);
+    root.cloudTag = factory(root.d3);
   }
 }(typeof self !== 'undefined' ? self : this, function (d3) {
   // Use b in some fashion.
   console.log('d3 version:' + d3.version);
+
   // Just return a value to define the module export.
   // This example returns an object, but the module
   // can return a function as the exported value.
   return function module() {
     // 公有属性
-    var num = 100;
+    var data = [];
     var radius = 150;
-    var r = 3;
-    var rotateAngleX = 300;
-    var rotateAngleY = 300;
+    var rotateAngleX = 500;
+    var rotateAngleY = 500;
     var isrunning = true;
-
     // 私有属性
     var svg;
     var width;
     var height;
     var vpx;
     var vpy;
-    var data;
     var angleX = Math.PI / rotateAngleX;
     var angleY = Math.PI / rotateAngleY;
-    var focal = 450;
+    var focal = 500;
 
     function chart(selection) {
       selection.each(function () {
-        data = dataTransform(num);
+        data = dataTransform(data);
         // svg
         svg = d3.select(this);
         width = svg.attr('width');
@@ -65,58 +63,84 @@
         svg.on('mousemove', function () {
           var e = d3.mouse(this);
           var rect = this.getBoundingClientRect();
-          var x = e[0] - rect - left - vpx - document.body.scrollLeft - document.documentElement.scrollLeft;
+          var x = e[0] - rect.left - vpx - document.body.scrollLeft - document.documentElement.scrollLeft;
           var y = e[1] - rect.top - vpy - document.body.scrollTop - document.documentElement.scrollTop;
 
           angleX = -x * 0.0001;
           angleY = -y * 0.0001;
         });
 
-        svg.append('rect')
-          .attrs({x: 0, y: 0, width: width, height: height, fill: 'block'});
-
         draw();
         animate();
       });
     }
 
-    // 画点。也可以用translate实现。
+    // 画点。
     function draw() {
-      var balls = svg.selectAll('circle')
+      var color = d3.scaleOrdinal(d3.schemeCategory10);
+      var tags = svg.selectAll('a.tag')
         .data(data);
 
-      balls
+      tags
         .exit()
         .remove();
 
-      balls
+      tags
         .enter()
-        .append('circle')
-        .attr('cx', function (d) {
-          return vpx + d.x;
+        .append('a')
+        .attr('class', 'tag')
+        .attr('href', function (d) {
+          return d.ele.url;
         })
-        .attr('cy', function (d) {
-          return vpy + d.y;
+        .attr('target', function (d) {
+          return d.ele.target;
         })
-        .attr('r', function (d) {
-          return d.r * (focal / (focal - d.z));
-        })
-        .attr('fill', 'rgb(255,255,255)');
-
-      balls
-        .attr('cx', function (d) {
-          return vpx + d.x;
-        })
-        .attr('cy', function (d) {
-          return vpy + d.y;
-        })
-        .attr('r', function (d) {
-          return d.r * (focal / (focal - d.z));
-        })
-        .attr('fill', 'rgb(255,255,255)')
-        .attr('opacity', function (d) {
+        .style('opacity', function (d) {
           return (d.z + radius) / (2 * radius) + 0.5;
         })
+        .style('z-index', function (d) {
+          return parseInt(focal / (focal - d.z) * 100);
+        })
+        .style('transform', function (d) {
+          var rect = this.getBoundingClientRect();
+          console.log('width,height', rect.width, rect.height);
+          var left = d.x + width / 2 - rect.width / 2 + 'px';
+          var top = d.y + height / 2 - rect.height / 2 + 'px';
+          var transform = 'translate(' + left + ',' + top + ') scale(' + (focal / (focal - d.z)) + ')';
+          return transform;
+        })
+        .append('text')
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', '20px')
+        .attr('fill', function (d, i) {
+          return color(i)
+        })
+        .text(function (d) {
+          return d.ele.label;
+        })
+        .on('mouseenter', function (d) {
+          isrunning = false;
+        })
+        .on('mouseleave', function () {
+          isrunning = true;
+          animate();
+        });
+
+      tags
+        .style('opacity', function (d) {
+          return (d.z + radius) / (2 * radius) + 0.5;
+        })
+        .style('z-index', function (d) {
+          return parseInt(focal / (focal - d.z) * 100);
+        })
+        .style('transform', function (d) {
+          var rect = this.getBoundingClientRect();
+          console.log('width,height', rect.width, rect.height);
+          var left = d.x + width / 2 - rect.width / 2 + 'px';
+          var top = d.y + height / 2 - rect.height / 2 + 'px';
+          var transform = 'translate(' + left + ',' + top + ') scale(' + focal / (focal - d.z) + ')';
+          return transform;
+        });
     }
 
     // 动画。
@@ -125,11 +149,6 @@
         rotateX(data[i], angleX);
         rotateY(data[i], angleY);
       }
-      // 排序
-      data.sort(function (a, b) {
-        return b.z - a.z;
-      });
-
       draw();
       isrunning && requestAnimationFrame(animate);
     }
@@ -157,18 +176,18 @@
     }
 
     // 转换数据为均匀分布于球面上。
-    function dataTransform(num) {
-      var balls = [];
-      for (var i = 1; i <= num; i++) {
-        var k = -1 + (2 * i - 1) / num;
+    function dataTransform(data) {
+      var tags = [];
+      for (var i = 0; i < data.length; i++) {
+        var k = -1 + (2 * (i + 1) - 1) / data.length;
         var phi = Math.acos(k);
-        var theta = Math.sqrt(num * Math.PI) * phi;
+        var theta = Math.sqrt(data.length * Math.PI) * phi;
         var x = radius * Math.cos(theta) * Math.sin(phi);
         var y = radius * Math.sin(theta) * Math.sin(phi);
         var z = radius * Math.cos(phi);
-        balls.push({x: x, y: y, z: z, r: r})
+        tags.push({x: x, y: y, z: z, ele: data[i]});
       }
-      return balls;
+      return tags;
     }
 
     // 腻子脚本。
@@ -182,11 +201,11 @@
     })();
 
     // setter getter
-    chart.num = function (_) {
+    chart.data = function (_) {
       if (!arguments.length) {
-        return num;
+        return data;
       }
-      num = _;
+      data = _;
       return chart;
     };
     chart.radius = function (_) {
@@ -194,13 +213,6 @@
         return radius;
       }
       radius = _;
-      return chart;
-    };
-    chart.r = function (_) {
-      if (!arguments.length) {
-        return r;
-      }
-      r = _;
       return chart;
     };
     chart.rotateAngleX = function (_) {
