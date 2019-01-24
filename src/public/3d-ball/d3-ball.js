@@ -38,6 +38,7 @@
     var num = 100;
     var radius = 150;
     var r = 3;
+    var color = 'white';
     var rotateAngleX = 300;
     var rotateAngleY = 300;
     var isrunning = true;
@@ -46,8 +47,7 @@
     var svg;
     var width;
     var height;
-    var vpx;
-    var vpy;
+    var g;
     var data;
     var angleX = Math.PI / rotateAngleX;
     var angleY = Math.PI / rotateAngleY;
@@ -60,20 +60,16 @@
         svg = d3.select(this);
         width = svg.attr('width');
         height = svg.attr('height');
-        vpx = width / 2;
-        vpy = height / 2;
-        svg.on('mousemove', function () {
+
+        g = svg.append('g')
+          .attr('class', 'd3-ball')
+          .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+        g.on('mousemove', function () {
           var e = d3.mouse(this);
-          var rect = this.getBoundingClientRect();
-          var x = e[0] - rect.left - vpx - document.body.scrollLeft - document.documentElement.scrollLeft;
-          var y = e[1] - rect.top - vpy - document.body.scrollTop - document.documentElement.scrollTop;
-
-          angleX = -x * 0.0001;
-          angleY = -y * 0.0001;
+          angleX = -e[0] * 0.0001;
+          angleY = -e[1] * 0.0001;
         });
-
-        svg.append('rect')
-          .attrs({x: 0, y: 0, width: width, height: height, fill: 'block'});
 
         draw();
         animate();
@@ -82,38 +78,38 @@
 
     // 画点。也可以用translate实现。
     function draw() {
-      var balls = svg.selectAll('circle')
-        .data(data);
+      var balls = g.selectAll('circle');
 
       balls
+        .data(data)
         .exit()
         .remove();
 
       balls
+        .data(data)
         .enter()
         .append('circle')
         .attr('cx', function (d) {
-          return vpx + d.x;
+          return d.x;
         })
         .attr('cy', function (d) {
-          return vpy + d.y;
+          return d.y;
         })
         .attr('r', function (d) {
           return d.r * (focal / (focal - d.z));
         })
-        .attr('fill', 'rgb(255,255,255)');
+        .attr('fill', color);
 
       balls
         .attr('cx', function (d) {
-          return vpx + d.x;
+          return d.x;
         })
         .attr('cy', function (d) {
-          return vpy + d.y;
+          return d.y;
         })
         .attr('r', function (d) {
           return d.r * (focal / (focal - d.z));
         })
-        .attr('fill', 'rgb(255,255,255)')
         .attr('opacity', function (d) {
           return (d.z + radius) / (2 * radius) + 0.5;
         })
@@ -122,8 +118,8 @@
     // 动画。
     function animate() {
       for (var i = 0; i < data.length; i++) {
-        rotateX(data[i], angleX);
-        rotateY(data[i], angleY);
+        rotateX(data[i]);
+        rotateY(data[i]);
       }
       // 排序
       data.sort(function (a, b) {
@@ -183,46 +179,29 @@
 
     // setter getter
     chart.num = function (_) {
-      if (!arguments.length) {
-        return num;
-      }
-      num = _;
-      return chart;
+      return arguments.length ? (num = +_, chart) : num;
     };
     chart.radius = function (_) {
-      if (!arguments.length) {
-        return radius;
-      }
-      radius = _;
-      return chart;
+      return arguments.length ? (radius = +_, chart) : radius;
     };
     chart.r = function (_) {
-      if (!arguments.length) {
-        return r;
-      }
-      r = _;
-      return chart;
+      return arguments.length ? (r = +_, chart) : r;
+    };
+    chart.color = function (_) {
+      return arguments.length ? (color = _, chart) : color;
     };
     chart.rotateAngleX = function (_) {
-      if (!arguments.length) {
-        return rotateAngleX;
-      }
-      rotateAngleX = _;
-      return chart;
+      return arguments.length ? (rotateAngleX = +_, chart) : rotateAngleX;
     };
     chart.rotateAngleY = function (_) {
-      if (!arguments.length) {
-        return rotateAngleY;
-      }
-      rotateAngleY = _;
-      return chart;
+      return arguments.length ? (rotateAngleY = +_, chart) : rotateAngleY;
     };
     chart.isrunning = function (_) {
       if (!arguments.length) {
         return isrunning;
       }
       isrunning = _;
-      isrunning && animate();
+      animate();
       return chart;
     };
 

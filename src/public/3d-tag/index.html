@@ -8,7 +8,7 @@
   <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
   <script src='d3-tag.js'></script>
   <style>
-  body{
+  body {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,42 +17,25 @@
   </style>
 </head>
 <body>
-<svg class="d3-tag" width="500" height="500"></svg>
+<svg class="demo" width="500" height="500"></svg>
 <script>
 var mockData = [
-  {label:'3D标签云', url: 'http://niklasknaack.blogspot.de/', target: '_top', tooltip: 'Lorem ipsum'},
-  {label:'3D标签云', url: 'http://www.flashforum.de/', target: '_top', tooltip: 'Dolor sit amet'},
-  {label:'3D标签云', url: 'http://www.jqueryscript.net/', target: '_top', tooltip: 'Consetetur sadipscing'},
-  {label:'3D标签云', url: 'http://forum.jswelt.de/', target: '_top', tooltip: 'Sed diam'},
-  {label:'3D标签云', url: 'https://jsfiddle.net/user/NiklasKnaack/fiddles/', target: '_top'},
-  {label:'3D标签云', url: 'http://codepen.io/', target: '_top', tooltip: 'At vero'},
-  {label:'3D标签云', url: 'http://threejs.org/', target: '_top', tooltip: 'Nonumy eirmod'},
-  {label:'3D标签云', url: 'http://webglstudio.org/', target: '_top', tooltip: 'Stet clita'},
-  {label:'3D标签云', url: 'http://jscompress.com/', target: '_top', tooltip: 'Justo duo'},
-  {label:'3D标签云', url: 'https://tinypng.com/', target: '_top', tooltip: 'Ut wisi enim'},
-  {label: 'Can I Use', url: 'http://caniuse.com/', target: '_top', tooltip: 'Minim veniam'},
-  {label:'3D标签云', url: 'https://goo.gl/', target: '_top', tooltip: 'Quis nostrud'},
-  {label:'3D标签云', url: 'http://www.opinionatedgeek.com/DotNet/Tools/HTMLEncode/Encode.aspx', target: '_top'},
-  {label:'3D标签云', url: 'https://twitter.com/niklaswebdev', target: '_top', tooltip: 'Veniam isictus'},
-  {label:'3D标签云', url: 'http://nkunited.deviantart.com/', target: '_top', tooltip: 'Autem insto'},
-  {label:'3D标签云', url: 'http://gulpjs.com/', target: '_top', tooltip: 'Officia dolor'},
-  // {label:'3D标签云', url: 'https://www.browsersync.io/', target: '_top', tooltip: 'Digi tal'},
-  {label:'3D标签云', url: 'https://github.com/', target: '_top', tooltip: 'Amet et quam'},
-  {label:'3D标签云', url: 'https://www.shadertoy.com/', target: '_top', tooltip: 'Meno equox'},
-  {label:'3D标签云', url: 'http://gamua.com/starling/', target: '_top', tooltip: 'Duis autem'},
-  {label:'3D标签云', url: 'http://jsperf.com/', target: '_top', tooltip: 'Soluta nobis'},
-  {label:'3D标签云', url: 'http://foundation.zurb.com/', target: '_top', tooltip: 'Blandit praesent'},
-  {label:'3D标签云', url: 'http://createjs.com/', target: '_top', tooltip: 'Dignissim qui'},
-  {label:'3D标签云', url: 'http://julian.com/research/velocity/', target: '_top', tooltip: 'Et iusto odio'},
-  {label:'3D标签云', url: 'https://greensock.com/docs/', target: '_top', tooltip: 'Facilisis at vero'},
-  {label:'3D标签云', url: 'https://jquery.com/', target: '_top', tooltip: 'Dolore eu'},
-  {label:'3D标签云', url: 'http://www.jqueryrain.com/', target: '_top', tooltip: 'In vulputate'},
-  {label:'3D标签云', url: 'http://jquery-plugins.net/', target: '_top', tooltip: 'In vulputate'}
+  {label: '乾', url: 'http://niklasknaack.blogspot.de/', target: '_top', tooltip: 'Lorem ipsum'},
+  {label: '坤', url: 'http://www.flashforum.de/', target: '_top', tooltip: 'Dolor sit amet'},
+  {label: '震', url: 'http://www.jqueryscript.net/', target: '_top', tooltip: 'Consetetur sadipscing'},
+  {label: '巽', url: 'http://forum.jswelt.de/', target: '_top', tooltip: 'Sed diam'},
+  {label: '坎', url: 'https://jsfiddle.net/user/NiklasKnaack/fiddles/', target: '_top'},
+  {label: '离', url: 'http://codepen.io/', target: '_top', tooltip: 'At vero'},
+  {label: '艮', url: 'http://threejs.org/', target: '_top', tooltip: 'Nonumy eirmod'},
+  {label: '兑', url: 'http://webglstudio.org/', target: '_top', tooltip: 'Stet clita'},
 ];
-d3.select('.d3-tag').call(cloudTag()
+d3.select('.demo').call(tag()
   .data(mockData)
   .radius(220)
-
+  .rotateAngleX(1000)
+  .rotateAngleY(1000)
+  .isrunning(true)
+  .shape('hring')
 );
 </script>
 </body>

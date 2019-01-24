@@ -5,7 +5,6 @@
   <title>d3-ball</title>
   <link rel="icon" href="../../assets/icon/favicon.ico">
   <script src="../../assets/lib/d3.min.js"></script>
-  <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
   <script src='d3-ball.js'></script>
   <style>
   body {
@@ -19,23 +18,24 @@
   </style>
 </head>
 <body>
-<svg class="d3-ball" width="1000" height="500"></svg>
+<svg class="demo" width="500" height="500"></svg>
 <div>
   <button id="btn-stop">停止</button>
 </div>
 <script>
-var ball = ball();
-d3.select('.d3-ball').call(ball
+var b = ball();
+d3.select('.demo').call(b
   .num(100) // 小球数量
   .radius(150) // 大球半径
   .r(3) // 小球半径
-  .rotateAngleX(1000) // 旋转基数
-  .rotateAngleY(1000) // 旋转基数
+  // .color('lightblue')
+  // .rotateAngleX(360) // 旋转基数
+  // .rotateAngleY(360) // 旋转基数
 );
 //
 document.getElementById("btn-stop").onclick = function () {
   this.innerText === "开始" ? this.innerText = "停止" : this.innerText = "开始";
-  this.innerText === "开始" ? ball.isrunning(false) : ball.isrunning(true);
+  this.innerText === "开始" ? b.isrunning(false) : b.isrunning(true);
 }
 </script>
 </body>
