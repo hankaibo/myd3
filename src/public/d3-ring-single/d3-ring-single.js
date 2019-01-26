@@ -324,32 +324,34 @@
         // 过渡效果
         d3.select(this)
           .on('mouseenter', function () {
-            d3.selectAll('g.node')
-              .attr('opacity', 1)
-              .transition()
-              .duration(transitionTime)
-              .attr('opacity', 0.2);
-
             d3.select(this)
+              .attr('class', 'node active')
               .transition()
               .duration(transitionTime)
               .attr('opacity', 1)
               .attr('transform', function () {
                 return 'translate(' + l[i][0] + ',' + -l[i][1] + ') scale(' + ballZoom + ')'
               });
+
+            d3.selectAll('g.node:not(.active)')
+            // .attr('opacity', 1)
+            // .transition()
+            // .duration(transitionTime)
+              .attr('opacity', 0.2);
           })
           .on('mouseleave', function () {
-            d3.selectAll('g.node')
-              .transition()
-              .duration(transitionTime)
-              .attr('opacity', 1);
-
             d3.select(this)
+              .attr('class', 'node')
               .transition()
               .duration(transitionTime)
               .attr('transform', function () {
                 return 'translate(' + l[i][0] + ',' + -l[i][1] + ') scale(1)'
               });
+
+            d3.selectAll('g.node:not(.active)')
+            // .transition()
+            // .duration(transitionTime)
+              .attr('opacity', 1);
           });
         // 提示框效果
         d3.select(this)
@@ -384,7 +386,7 @@
         // 四象限设置
         if (hudu > 0 && hudu < Math.PI * .5) {
           execTextOfcircleLayout(dom, firstQuadrantDominantBaseline, firstQuadrantTextAnchor);
-        } else if (hudu < Math.PI ) {
+        } else if (hudu < Math.PI) {
           execTextOfcircleLayout(dom, secondQuadrantDominantBaseline, secondQuadrantTextAnchor);
         } else if (hudu < Math.PI * 1.5) {
           execTextOfcircleLayout(dom, thirdQuadrantDominantBaseline, thirdQuadrantTextAnchor);
