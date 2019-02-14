@@ -78,6 +78,7 @@
 
     // 画点。也可以用translate实现。
     function draw() {
+      if (!g) return;
       var balls = g.selectAll('circle');
 
       balls
@@ -101,6 +102,7 @@
         .attr('fill', color);
 
       balls
+        .data(data)
         .attr('cx', function (d) {
           return d.x;
         })

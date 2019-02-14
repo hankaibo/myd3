@@ -76,6 +76,7 @@
 
     // 画点。
     function draw() {
+      if (!g) return;
       var color = d3.scaleOrdinal(d3.schemeCategory10);
       var tags = g.selectAll('a.tag');
 
@@ -116,6 +117,7 @@
         });
 
       tags
+        .data(data)
         .style('opacity', function (d) {
           return (d.z + radius) / (2 * radius) + 0.5;
         })
@@ -136,9 +138,11 @@
       for (var i = 0; i < data.length; i++) {
         switch (shape) {
           case 'hring':
+          case 'hcylinder':
             rotateX(data[i], angleX);
             break;
           case 'vring':
+          case 'vcylinder':
             rotateY(data[i], angleY);
             break;
           default:
@@ -226,10 +230,20 @@
       return arguments.length ? (rotateAngleY = +_, chart) : rotateAngleY;
     };
     chart.isrunning = function (_) {
-      return arguments.length ? (isrunning = _, chart) : isrunning;
+      if (!arguments.length) {
+        return isrunning;
+      }
+      isrunning = _;
+      animate();
+      return chart;
     };
     chart.shape = function (_) {
-      return arguments.length ? (shape = _, chart) : shape;
+      if (!arguments.length) {
+        return shape;
+      }
+      shape = _;
+      data = dataTransform(data);
+      return chart;
     };
 
     return chart;
