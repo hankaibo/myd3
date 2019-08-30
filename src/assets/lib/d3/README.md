@@ -9,7 +9,7 @@
 * [API Reference](https://github.com/d3/d3/blob/master/API.md)
 * [Release Notes](https://github.com/d3/d3/releases)
 * [Gallery](https://github.com/d3/d3/wiki/Gallery)
-* [Examples](https://bl.ocks.org/mbostock)
+* [Examples](https://observablehq.com/@d3)
 * [Wiki](https://github.com/d3/d3/wiki)
 
 ## Installing
@@ -41,7 +41,7 @@ import {scaleLinear} from "d3-scale";
 Or import everything into a namespace (here, `d3`):
 
 ```js
-import * as d3 from "d3";
+import * as d3 from "src/assets/lib/d3/d3";
 ```
 
 In Node:

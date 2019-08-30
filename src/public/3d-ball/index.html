@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>d3-ball</title>
   <link rel="icon" href="../../assets/icon/favicon.ico">
-  <script src="../../assets/lib/d3.min.js"></script>
+  <script src="../../assets/lib/d3/d3.min.js"></script>
   <script src='d3-ball.js'></script>
   <style>
   body {
@@ -30,14 +30,14 @@ d3.select('.demo').call(b
     .num(100) // 小球数量
     .radius(150) // 大球半径
     .r(3) // 小球半径
-  // .color('lightblue')
-  // .rotateAngleX(360) // 旋转基数
-  // .rotateAngleY(360) // 旋转基数
+    .color('lightblue')
+    .rotateAngleX(360) // 旋转基数
+    .rotateAngleY(360) // 旋转基数
 );
 //
 document.getElementById("btn-stop").onclick = function () {
-  this.innerText === "开始" ? this.innerText = "停止" : this.innerText = "开始";
-  this.innerText === "开始" ? b.isrunning(false) : b.isrunning(true);
+    this.innerText === "开始" ? this.innerText = "停止" : this.innerText = "开始";
+    this.innerText === "开始" ? b.isrunning(false) : b.isrunning(true);
 }
 </script>
 </body>

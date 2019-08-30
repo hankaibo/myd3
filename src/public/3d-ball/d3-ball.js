@@ -58,8 +58,8 @@
         data = dataTransform(num);
         // svg
         svg = d3.select(this);
-        width = svg.attr('width');
-        height = svg.attr('height');
+        width = +svg.attr('width');
+        height = +svg.attr('height');
 
         g = svg.append('g')
           .attr('class', 'd3-ball')

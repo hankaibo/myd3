@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>cloud tag</title>
+  <link rel="icon" href="../../assets/icon/favicon.ico">
+  <script src="../../assets/lib/d3/d3.min.js"></script>
+  <script src='d3-clock.js'></script>
+  <style>
+  body {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    background-color: #000000;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  body {
+    background: #eee;
+    font: 10px Helvetica;
+    margin: auto;
+    position: relative;
+    width: 960px;
+  }
+
+  text {
+    text-anchor: middle;
+    alignment-baseline: middle;
+    fill: #444;
+  }
+
+  path.orbit {
+    fill: #785ea5;
+  }
+
+  .hour text {
+    fill: #222;
+    font-size: 16px;
+  }
+
+  .hour line {
+    stroke: #785ea5;
+  }
+
+  .minute text {
+    display: none;
+    fill: #444;
+    font-size: 8px;
+  }
+
+  .minute line {
+    stroke: #785ea5;
+  }
+
+  </style>
+</head>
+<body>
+<svg class="demo" width="960" height="500"></svg>
+<script>
+var t = clock();
+d3.select('.demo').call(t);
+</script>
+</body>
+</html>

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>cloud tag</title>
   <link rel="icon" href="../../assets/icon/favicon.ico">
-  <script src="../../assets/lib/d3.min.js"></script>
-  <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+  <script src="../../assets/lib/d3/d3.min.js"></script>
+  <script src="../../assets/lib/d3-selection-multi/d3-selection-multi.min.js"></script>
   <script src='d3-tag.js'></script>
   <style>
   body {
@@ -37,37 +37,37 @@
 </div>
 <script>
 var mockData = [
-  {label: '乾', url: 'http://niklasknaack.blogspot.de/', target: '_top', tooltip: 'Lorem ipsum'},
-  {label: '坤', url: 'http://www.flashforum.de/', target: '_top', tooltip: 'Dolor sit amet'},
-  {label: '震', url: 'http://www.jqueryscript.net/', target: '_top', tooltip: 'Consetetur sadipscing'},
-  {label: '巽', url: 'http://forum.jswelt.de/', target: '_top', tooltip: 'Sed diam'},
-  {label: '坎', url: 'https://jsfiddle.net/user/NiklasKnaack/fiddles/', target: '_top'},
-  {label: '离', url: 'http://codepen.io/', target: '_top', tooltip: 'At vero'},
-  {label: '艮', url: 'http://threejs.org/', target: '_top', tooltip: 'Nonumy eirmod'},
-  {label: '兑', url: 'http://webglstudio.org/', target: '_top', tooltip: 'Stet clita'},
-  {label: '乾', url: 'http://niklasknaack.blogspot.de/', target: '_top', tooltip: 'Lorem ipsum'},
-  {label: '坤', url: 'http://www.flashforum.de/', target: '_top', tooltip: 'Dolor sit amet'},
-  {label: '震', url: 'http://www.jqueryscript.net/', target: '_top', tooltip: 'Consetetur sadipscing'},
-  {label: '巽', url: 'http://forum.jswelt.de/', target: '_top', tooltip: 'Sed diam'},
-  {label: '坎', url: 'https://jsfiddle.net/user/NiklasKnaack/fiddles/', target: '_top'},
-  {label: '离', url: 'http://codepen.io/', target: '_top', tooltip: 'At vero'},
-  {label: '艮', url: 'http://threejs.org/', target: '_top', tooltip: 'Nonumy eirmod'},
-  {label: '兑', url: 'http://webglstudio.org/', target: '_top', tooltip: 'Stet clita'},
-  {label: '乾', url: 'http://niklasknaack.blogspot.de/', target: '_top', tooltip: 'Lorem ipsum'},
-  {label: '坤', url: 'http://www.flashforum.de/', target: '_top', tooltip: 'Dolor sit amet'},
-  {label: '震', url: 'http://www.jqueryscript.net/', target: '_top', tooltip: 'Consetetur sadipscing'},
-  {label: '巽', url: 'http://forum.jswelt.de/', target: '_top', tooltip: 'Sed diam'},
-  {label: '坎', url: 'https://jsfiddle.net/user/NiklasKnaack/fiddles/', target: '_top'},
-  {label: '离', url: 'http://codepen.io/', target: '_top', tooltip: 'At vero'},
-  {label: '艮', url: 'http://threejs.org/', target: '_top', tooltip: 'Nonumy eirmod'},
-  {label: '兑', url: 'http://webglstudio.org/', target: '_top', tooltip: 'Stet clita'},
+  {label: '乾', url: 'http://niklasknaack.blogspot.de/', target: '_block', tooltip: 'Lorem ipsum'},
+  {label: '坤', url: 'http://www.flashforum.de/', target: '_block', tooltip: 'Dolor sit amet'},
+  {label: '震', url: 'http://www.jqueryscript.net/', target: '_block', tooltip: 'Consetetur sadipscing'},
+  {label: '巽', url: 'http://forum.jswelt.de/', target: '_block', tooltip: 'Sed diam'},
+  {label: '坎', url: 'https://jsfiddle.net/user/NiklasKnaack/fiddles/', target: '_block'},
+  {label: '离', url: 'http://codepen.io/', target: '_block', tooltip: 'At vero'},
+  {label: '艮', url: 'http://threejs.org/', target: '_block', tooltip: 'Nonumy eirmod'},
+  {label: '兑', url: 'http://webglstudio.org/', target: '_block', tooltip: 'Stet clita'},
+  {label: '乾', url: 'http://niklasknaack.blogspot.de/', target: '_block', tooltip: 'Lorem ipsum'},
+  {label: '坤', url: 'http://www.flashforum.de/', target: '_block', tooltip: 'Dolor sit amet'},
+  {label: '震', url: 'http://www.jqueryscript.net/', target: '_block', tooltip: 'Consetetur sadipscing'},
+  {label: '巽', url: 'http://forum.jswelt.de/', target: '_block', tooltip: 'Sed diam'},
+  {label: '坎', url: 'https://jsfiddle.net/user/NiklasKnaack/fiddles/', target: '_block'},
+  {label: '离', url: 'http://codepen.io/', target: '_block', tooltip: 'At vero'},
+  {label: '艮', url: 'http://threejs.org/', target: '_block', tooltip: 'Nonumy eirmod'},
+  {label: '兑', url: 'http://webglstudio.org/', target: '_block', tooltip: 'Stet clita'},
+  {label: '乾', url: 'http://niklasknaack.blogspot.de/', target: '_block', tooltip: 'Lorem ipsum'},
+  {label: '坤', url: 'http://www.flashforum.de/', target: '_block', tooltip: 'Dolor sit amet'},
+  {label: '震', url: 'http://www.jqueryscript.net/', target: '_block', tooltip: 'Consetetur sadipscing'},
+  {label: '巽', url: 'http://forum.jswelt.de/', target: '_block', tooltip: 'Sed diam'},
+  {label: '坎', url: 'https://jsfiddle.net/user/NiklasKnaack/fiddles/', target: '_block'},
+  {label: '离', url: 'http://codepen.io/', target: '_block', tooltip: 'At vero'},
+  {label: '艮', url: 'http://threejs.org/', target: '_block', tooltip: 'Nonumy eirmod'},
+  {label: '兑', url: 'http://webglstudio.org/', target: '_block', tooltip: 'Stet clita'},
 ];
 var t = tag();
 d3.select('.demo').call(t
   .data(mockData)
   .radius(220)
-  .rotateAngleX(1000)
-  .rotateAngleY(1000)
+  .rotateAngleX(500)
+  .rotateAngleY(500)
   .isrunning(true)
 );
 //

@@ -5,8 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>dashboard</title>
+  <link rel="icon" href="../../assets/icon/favicon.ico">
+  <script src="../../assets/lib/d3/d3.min.js"></script>
+  <script src='d3-dashboard.js'></script>
 </head>
 <body>
-  <svg class="d3-dashboard" width="900" height="720"></svg>
+<svg class="demo" width="960" height="500"></svg>
+<script>
+var t = dashboard();
+d3.select('.demo').call(t
+    .width(600)
+    .height(450)
+    .backgroundColor('#f99')
+    // 中心数值文字设置
+    .centerTextValue(62)
+    .centerTextValueColor('green')
+    // 中心箭头线设置
+    // 中心文本文字设置
+    .centerTextTitle('优')
+    .centerTextTitleColor('red')
+    // 内轨轨道设置
+    .orbitColorIn('#ccc')
+    .scaleColor('yellow')
+    .scaleTextColor('red')
+);
+</script>
 </body>
 </html>
