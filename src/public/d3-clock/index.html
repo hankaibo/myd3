@@ -7,118 +7,105 @@
   <script src="../../assets/lib/d3/d3.min.js"></script>
   <script src='d3-clock.js'></script>
   <style>
-  body {
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-    background-color: #000000;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-  }
+    body {
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+      background-color: #000000;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
 
-  body {
-    background: #eee;
-    font: 10px Helvetica;
-    margin: auto;
-    position: relative;
-    width: 960px;
-  }
+    body {
+      background: #eee;
+      font: 10px Helvetica;
+      margin: auto;
+      position: relative;
+      width: 960px;
+    }
 
-  text {
-    text-anchor: middle;
-    alignment-baseline: middle;
-    fill: #444;
-  }
+    text {
+      text-anchor: middle;
+      alignment-baseline: middle;
+      fill: #444;
+    }
 
-  .dial {
-    fill: #fff;
-    stroke: #785ea5;
-    stroke-width: 2;
-  }
+    .dial-edge {
+      fill: #fff;
+      stroke: #785ea5;
+    }
 
-  .dial-center {
-    fill: #c22
-  }
+    .dial-center {
+      fill: #c22
+    }
 
-  .dial-arc {
-    fill: #785ea5;
-  }
+    .hour text {
+      fill: #222;
+      font-size: 16px;
+      text-anchor: middle; /* 文本水平居中 */
+      dominant-baseline: middle; /* 文本垂直居中 */
+    }
 
-  .hour text {
-    fill: #222;
-    font-size: 16px;
-    text-anchor: middle; /* 文本水平居中 */
-    dominant-baseline: middle; /* 文本垂直居中 */
-  }
+    .hour line,
+    .minute line {
+      stroke: #785ea5;
+    }
 
-  .hour line {
-    stroke: #785ea5;
-  }
-
-  .minute text {
-    display: none;
-    fill: #444;
-    font-size: 8px;
-  }
-
-  .minute line {
-    stroke: #785ea5;
-  }
-
+    .minute text {
+      display: none;
+      fill: #444;
+      font-size: 8px;
+    }
 
   </style>
 </head>
 <body>
-
-<button>上午</button>
-<button>下午</button>
-
 <svg class="demo" width="600" height="250"></svg>
 <script>
 var t = Clock();
 var data = [
-    {
-        "name": "上午",
-        "value": 33,
-        "maxHour": 10,
-        "maxValue": 3,
-        "startTime": 8,
-        "endTime": 12
-    },
-    {
-        "name": "下午",
-        "value": 44,
-        "maxHour": 15,
-        "maxValue": 3,
-        "startTime": 13,
-        "endTime": 18
-    },
-    {
-        "name": "晚上",
-        "value": 54,
-        "maxHour": 20,
-        "maxValue": 3,
-        "startTime": 18,
-        "endTime": 22
-    },
-    {
-        "name": "凌晨",
-        "value": 90,
-        "maxHour": 2,
-        "maxValue": 30,
-        "startTime": 1,
-        "endTime": 6
-    },
-    {
-        "name": "午夜",
-        "value": 90,
-        "maxHour": 2,
-        "maxValue": 30,
-        "startTime": 1,
-        "endTime": 6
-    }
+  {
+    "name": "上午",
+    "value": 33,
+    "maxHour": 10,
+    "maxValue": 3,
+    "startTime": 8,
+    "endTime": 12
+  },
+  {
+    "name": "下午",
+    "value": 44,
+    "maxHour": 15,
+    "maxValue": 3,
+    "startTime": 13,
+    "endTime": 18
+  },
+  {
+    "name": "晚上",
+    "value": 54,
+    "maxHour": 20,
+    "maxValue": 3,
+    "startTime": 18,
+    "endTime": 22
+  },
+  {
+    "name": "凌晨",
+    "value": 9,
+    "maxHour": 2,
+    "maxValue": 30,
+    "startTime": 1,
+    "endTime": 6
+  },
+  {
+    "name": "午夜",
+    "value": 90,
+    "maxHour": 2,
+    "maxValue": 30,
+    "startTime": 1,
+    "endTime": 6
+  }
 ];
 d3.select('.demo').call(t.data(data))</script>
 </body>

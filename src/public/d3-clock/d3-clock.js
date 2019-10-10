@@ -44,7 +44,8 @@
       bottom: 20
     };
     var colorScale = ["#785ea5", '#4b93cf', "#45babb", "#5ab76f", '#0da2b6', '#f3d13c', '#ed6d46'];
-    var dialCenter = 3;
+    var dialCenterRadius = 3; // 中心点半径
+    var dialStrokeWidth = 6; // 边宽
     // 私有属性
     var svg;
     var x = d3.scaleLinear();
@@ -63,6 +64,12 @@
         height = +svg.attr('height');
 
         // bar
+        // 偏移量
+        data = data.map(item => {
+          item.value = item.value + 100 / 2;
+          return item;
+        });
+        console.log(data);
         x.domain([0, d3.max(data, d => d.value) * 1.2]).range([0, quadrantWidth()]);
         y.domain(data.map(d => d.name)).range([0, quadrantHeight()]).padding(0.55);
         drawAxes();
@@ -70,8 +77,8 @@
 
         // dial
         drawDial();
-        // drawArc();
-        drawHand();
+        drawArc(data[0]);
+        drawHand(data[0]);
         hourAxis();
         minuteAxis();
       });
@@ -136,7 +143,12 @@
 
       bars.on("mouseover", function (d) {
         d3.select(this)
-          .style("fill", "#D3D3D3");
+          .on('click', function (d) {
+            d.color = this.style.fill;
+            drawArc(d);
+            drawHand(d);
+          })
+        // .style("fill", "#D3D3D3");
       })
         .on("mouseout", function (d, i) {
           d3.select(this)
@@ -171,32 +183,56 @@
       dial.append('circle')
         .attr('cx', 0)
         .attr('cy', 0)
-        .attr('r', quadrantHeight() / 2)
-        .attr('class', 'dial-edge');
+        // 半径减去边宽的一半。
+        .attr('r', quadrantHeight() / 2 - dialStrokeWidth / 2)
+        .attr('class', 'dial-edge')
+        .attr('stroke-width', dialStrokeWidth);
 
       dial.append('circle')
         .attr('cx', 0)
         .attr('cy', 0)
-        .attr('r', dialCenter)
+        .attr('r', dialCenterRadius)
         .attr('class', 'dial-center');
     }
 
-    // function drawArc() {
-    //   var arc = d3.arc()
-    //     .outerRadius(arcOuterRadius)
-    //     .innerRadius(arcInnerRadius)
-    //     .startAngle(arcStartAngle)
-    //     .endAngle(arcEndAngle);
-    //
-    //   dial.append('path')
-    //     .attr('class', 'dial-arc')
-    //     .attr('d', arc);
-    // }
+    function drawArc(data) {
+      var start = data.startTime > 12 ? data.startTime - 12 : data.startTime;
+      var end = data.endTime > 12 ? data.endTime - 12 : data.endTime;
+      var maxHourStart = data.maxHour % 12;
+      var maxHourEnd = (data.maxHour + 1) % 12;
+      var scale = d3.scaleLinear().domain([0, 12]).range([0, Math.PI * 2]);
 
-    function drawHand() {
+      dial.selectAll('.dial.path').remove();
+
+      var dialPath = dial.append('g')
+        .attr('class', 'dial path');
+
+      var arc = d3.arc()
+        .outerRadius(quadrantHeight() / 2 - dialStrokeWidth)
+        .innerRadius(dialCenterRadius);
+
+      var arcEdge = d3.arc()
+        .outerRadius(quadrantHeight() / 2)
+        .innerRadius(quadrantHeight() / 2 - dialStrokeWidth);
+
+      dialPath.append('path')
+        .attr('class', 'dial-arc')
+        .attr('d', arc.startAngle(scale(start)).endAngle(scale(end)))
+        .attr('fill', data.color || colorScale[0])
+        .attr('opacity', '0.3');
+
+      dialPath.append('path')
+        .attr('class', 'dial-arc-edge')
+        .attr('d', arcEdge.startAngle(scale(maxHourStart)).endAngle(scale(maxHourEnd)))
+        .attr('fill', data.color || colorScale[0]);
+    }
+
+    function drawHand(data) {
       // TODO
-      var time = 21 || 0;
+      var time = data.maxHour || 0;
       var hours = ((time + 24) % 12 || 0);
+
+      dial.select('.field').remove();
 
       field = dial.append('g')
         .attr('class', 'field');
@@ -206,15 +242,14 @@
         .attr('stroke-width', 6)
         .attr('stroke-linecap', 'round')
         // 避开中心点
-        .attr('x1', dialCenter)
+        .attr('x1', dialCenterRadius)
         .attr('y1', 0)
-        .attr('x2', quadrantHeight() / 2 * 0.6)
+        .attr('x2', quadrantHeight() / 2 * 0.618)
         .attr('y2', 0)
         .attr('transform', 'rotate(' + (360 * (hours / 12) - 90) + ')')
         .style('stroke', '#222');
     }
 
-    // 时针刻度
     function hourAxis() {
       var hourDomain = d3.range(12);
       var hourAngle = d3.scaleLinear()
@@ -233,9 +268,9 @@
         });
 
       hourMarks.append('text')
-        .attr('y', quadrantHeight() / 2 * 0.6)
+        .attr('y', (quadrantHeight() / 2 - dialStrokeWidth - 8 - 10))
         .attr('transform', function (d) {
-          return 'rotate(' + hourAngle(d) + ',0,' + quadrantHeight() / 2 + ')';
+          return 'rotate(' + hourAngle(d) + ',0,' + (quadrantHeight() / 2 - dialStrokeWidth - 8 - 10) + ')';
         })
         .text(function (d, i) {
           if (i % 3 === 0) {
@@ -250,18 +285,19 @@
       hourMarks
         .append('line')
         .attr('stroke-width', 3)
-        .attr('x1', quadrantHeight() / 2)
-        .attr('x2', quadrantHeight() / 2)
+        // 抛去边宽，从边往里长度
+        .attr('x1', quadrantHeight() / 2 - dialStrokeWidth - 8)
         .attr('y1', 0)
+        // 去边宽
+        .attr('x2', quadrantHeight() / 2 - dialStrokeWidth)
         .attr('y2', 0);
     }
 
-    // 分针刻度
     function minuteAxis() {
       var minuteDomain = d3.range(60);
       var minuteAngle = d3.scaleLinear()
         .domain([0, 60])
-        .range([180, -180]);
+        .range([-180, 180]);
 
       var minuteMarks = dial.append('g')
         .attr('class', 'axis minute')
@@ -285,13 +321,14 @@
         .text(String);
 
       minuteMarks.append('line')
-        .attr('x1', quadrantHeight() / 2)
-        .attr('x2', quadrantHeight() / 2)
+        .attr('x1', (quadrantHeight() / 2 - dialStrokeWidth - 4))
         .attr('y1', 0)
+        .attr('x2', (quadrantHeight() / 2 - dialStrokeWidth))
         .attr('y2', 0);
     }
 
     function quadrantWidth() {
+      // 偏移出左侧一定宽度，画表。
       return width - margins.left - margins.right - 100;
     }
 
