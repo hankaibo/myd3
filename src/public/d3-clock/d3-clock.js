@@ -25,26 +25,35 @@
     module.chart = factory(require('d3'));
   } else {
     // Browser globals (root is window)
-    root.clock = factory(root.d3);
+    root.Clock = factory(root.d3);
   }
 }(typeof self !== 'undefined' ? self : this, function (d3) {
   // Use b in some fashion.
-  console.log('d3 version:' + d3.version);
+  // console.log('d3 version:' + d3.version);
 
   // Just return a value to define the module export.
   // This example returns an object, but the module
   // can return a function as the exported value.
   return function module() {
     // 公有属性
+    var data;
+    var margins = {
+      top: 20,
+      left: 20,
+      right: 30,
+      bottom: 20
+    };
+    var colorScale = ["#785ea5", '#4b93cf', "#45babb", "#5ab76f", '#0da2b6', '#f3d13c', '#ed6d46'];
+    var dialCenter = 3;
     // 私有属性
     var svg;
+    var x = d3.scaleLinear();
+    var y = d3.scaleBand();
     var width;
     var height;
-    var g;
+    var plot;
+    var dial;
     var field;
-    var counter = 0;
-    var PI = Math.PI;
-    var tau = 2 * PI;
 
     function chart(selection) {
       selection.each(function () {
@@ -53,69 +62,214 @@
         width = +svg.attr('width');
         height = +svg.attr('height');
 
-        g = svg.append('g')
-          .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+        // bar
+        x.domain([0, d3.max(data, d => d.value) * 1.2]).range([0, quadrantWidth()]);
+        y.domain(data.map(d => d.name)).range([0, quadrantHeight()]).padding(0.55);
+        drawAxes();
+        drawBar();
 
-        field = g.selectAll('g')
-          .data(fields)
-          .enter()
-          .append('g')
-          .attr('class', 'field');
-
-        field.append('line')
-          .attr('class', function (d) {
-            return d.field + ' hand';
-          })
-          .attr('stroke-width', function (d) {
-            return d.strokeWidth;
-          })
-          .attr('stroke-linecap', 'round')
-          .attr('x1', 0)
-          .attr('x2', function (d) {
-            return d.length;
-          })
-          .attr('y1', 0)
-          .attr('y2', 0);
-
-
-        faceHands();
-        minuteHands();
-        hourHands();
+        // dial
+        drawDial();
+        // drawArc();
+        drawHand();
+        hourAxis();
+        minuteAxis();
       });
     }
 
-    // 画面板及中心
-    function faceHands() {
-      var arc = d3.arc()
-        .outerRadius(188)
-        .innerRadius(183)
-        .startAngle(0)
-        .endAngle(tau);
+    function drawAxes() {
+      plot = svg.append('g')
+        .attr('class', 'plot')
+        .attr('transform', 'translate(' + (margins.left + 100) + ',' + margins.top + ')');
 
-      g.append('path')
-        .attr('class', 'orbit')
-        .attr('d', arc);
+      var xAxis = d3.axisBottom()
+        .scale(x)
+        .ticks(5);
+      var yAxis = d3.axisRight()
+        .scale(y)
+        .tickSize(0)
+        .tickPadding(8);
 
-      // 画中心
-      g.append('circle')
-        .attr('cx', 0)
-        .attr('cy', 0)
-        .attr('r', 3)
-        .attr('fill', '#c22');
+      plot.append('g')
+        .attr('class', 'axis x')
+        .attr('transform', function () {
+          return 'translate(' + 0 + ',' + quadrantHeight() + ')';
+        })
+        .call(xAxis)
+        .select('.domain').remove();
+
+      plot.select('.axis.x')
+        .selectAll('.tick').remove();
+
+      plot.append('g')
+        .attr('class', 'axis y')
+        .attr('transform', function () {
+          return 'translate(' + quadrantWidth() + ',' + 0 + ')';
+        })
+        .call(yAxis)
+        .select('.domain').remove();
     }
 
-    // 分针
-    function minuteHands() {
+    function drawBar() {
+      var barSvg = plot.append('g')
+        .attr('class', 'bars');
+
+      barSvg.selectAll('rect.bar')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr('fill', '#dcdcdc')
+        .attr('x', x(0))
+        .attr('y', function (d) {
+          return y(d.name);
+        })
+        .attr('width', quadrantWidth())
+        .attr('height', y.bandwidth())
+        .attr('rx', y.bandwidth());
+
+      var bars = barSvg.selectAll('rect.bar')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar');
+
+
+      bars.on("mouseover", function (d) {
+        d3.select(this)
+          .style("fill", "#D3D3D3");
+      })
+        .on("mouseout", function (d, i) {
+          d3.select(this)
+            .transition().duration(600)
+            .style("fill", colorScale[i]);
+        });
+
+      bars.transition()
+        .duration(500)
+        .delay(function (d, i) {
+          return i * 200;
+        })
+        .attr('x', x(0))
+        .attr('y', function (d) {
+          return y(d.name);
+        })
+        .attr('width', function (d) {
+          return x(d.value) - x(0);
+        })
+        .attr('height', y.bandwidth())
+        .attr('rx', y.bandwidth())
+        .attr('fill', function (d, i) {
+          return colorScale[i];
+        });
+    }
+
+    function drawDial() {
+      dial = svg.append('g')
+        .attr('class', 'dial')
+        .attr('transform', 'translate(' + (margins.left + 100) + ',' + (quadrantHeight() / 2 + margins.top) + ')'
+        );
+      dial.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', quadrantHeight() / 2)
+        .attr('class', 'dial-edge');
+
+      dial.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', dialCenter)
+        .attr('class', 'dial-center');
+    }
+
+    // function drawArc() {
+    //   var arc = d3.arc()
+    //     .outerRadius(arcOuterRadius)
+    //     .innerRadius(arcInnerRadius)
+    //     .startAngle(arcStartAngle)
+    //     .endAngle(arcEndAngle);
+    //
+    //   dial.append('path')
+    //     .attr('class', 'dial-arc')
+    //     .attr('d', arc);
+    // }
+
+    function drawHand() {
+      // TODO
+      var time = 21 || 0;
+      var hours = ((time + 24) % 12 || 0);
+
+      field = dial.append('g')
+        .attr('class', 'field');
+
+      field.append('line')
+        .attr('class', 'hour hand')
+        .attr('stroke-width', 6)
+        .attr('stroke-linecap', 'round')
+        // 避开中心点
+        .attr('x1', dialCenter)
+        .attr('y1', 0)
+        .attr('x2', quadrantHeight() / 2 * 0.6)
+        .attr('y2', 0)
+        .attr('transform', 'rotate(' + (360 * (hours / 12) - 90) + ')')
+        .style('stroke', '#222');
+    }
+
+    // 时针刻度
+    function hourAxis() {
+      var hourDomain = d3.range(12);
+      var hourAngle = d3.scaleLinear()
+        .domain([0, 12])
+        .range([180, -180]);
+
+      var hourMarks = dial.append('g')
+        .attr('class', 'axis hour')
+        .selectAll('.tick')
+        .data(hourDomain)
+        .enter()
+        .append('g')
+        .attr('class', 'tick')
+        .attr('transform', function (d) {
+          return 'rotate(' + -hourAngle(d) + ')';
+        });
+
+      hourMarks.append('text')
+        .attr('y', quadrantHeight() / 2 * 0.6)
+        .attr('transform', function (d) {
+          return 'rotate(' + hourAngle(d) + ',0,' + quadrantHeight() / 2 + ')';
+        })
+        .text(function (d, i) {
+          if (i % 3 === 0) {
+            if (i === 0) {
+              return '12';
+            } else {
+              return i;
+            }
+          }
+        });
+
+      hourMarks
+        .append('line')
+        .attr('stroke-width', 3)
+        .attr('x1', quadrantHeight() / 2)
+        .attr('x2', quadrantHeight() / 2)
+        .attr('y1', 0)
+        .attr('y2', 0);
+    }
+
+    // 分针刻度
+    function minuteAxis() {
       var minuteDomain = d3.range(60);
       var minuteAngle = d3.scaleLinear()
         .domain([0, 60])
         .range([180, -180]);
 
-      var minuteMarks = g.selectAll('.minute.axis')
+      var minuteMarks = dial.append('g')
+        .attr('class', 'axis minute')
+        .selectAll('.tick')
         .data(minuteDomain)
         .enter()
         .append('g')
-        .attr('class', 'minute')
+        .attr('class', 'tick')
         .attr('transform', function (d) {
           return 'rotate(' + -minuteAngle(d) + ')';
         });
@@ -124,103 +278,34 @@
         return d % 5 === 0;
       })
         .append('text')
-        .attr('y', 190)
+        .attr('y', quadrantHeight() / 2)
         .attr('transform', function (d) {
-          return 'rotate(' + minuteAngle(d) + ',0,190)';
+          return 'rotate(' + minuteAngle(d) + ',0,' + quadrantHeight() / 2 + ')';
         })
         .text(String);
 
       minuteMarks.append('line')
-        .attr('x1', 168)
-        .attr('x2', 180)
+        .attr('x1', quadrantHeight() / 2)
+        .attr('x2', quadrantHeight() / 2)
         .attr('y1', 0)
-        .attr('y2', 0)
+        .attr('y2', 0);
     }
 
-    // 时针
-    function hourHands() {
-      var hourDomain = d3.range(12);
-      var hourAngle = d3.scaleLinear()
-        .domain([0, 12])
-        .range([180, -180]);
-
-      var hourMarks = g.selectAll('.hour.axis')
-        .data(hourDomain)
-        .enter()
-        .append('g')
-        .attr('class', 'hour')
-        .attr('transform', function (d) {
-          return 'rotate(' + -hourAngle(d) + ')';
-        });
-
-      hourMarks.append('text')
-        .attr('y', 140)
-        .attr('transform', function (d) {
-          return 'rotate(' + hourAngle(d) + ',0,140)';
-        })
-        .text(function (d, i) {
-          if (i === 0) {
-            return '12';
-          } else {
-            return i;
-          }
-        });
-
-      hourMarks
-        .append('line')
-        .attr('stroke-width', 2)
-        .attr('x1', 156)
-        .attr('x2', 180)
-        .attr('y1', 0)
-        .attr('y2', 0)
+    function quadrantWidth() {
+      return width - margins.left - margins.right - 100;
     }
 
-    function tick() {
-      if (counter++ % 3 !== 0) {
-        return;
-      }
-      field.data(fields)
-        .select('line')
-        .attr('transform', function (d) {
-          return 'rotate(' + (360 * d.value - 90) + ')'
-        })
-        .style('stroke', function (d) {
-          return d.color;
-        })
+    function quadrantHeight() {
+      return height - margins.top - margins.bottom;
     }
-
-    function fields() {
-      var now = new Date;
-      var milliseconds = now.getMilliseconds();
-      var seconds = now.getSeconds() + milliseconds / 1000;
-      var minutes = now.getMinutes() + seconds / 60;
-      var hours = ((now.getHours() + 24) % 12 || 0) + minutes / 60;
-      return [
-        {field: 'hours', color: '#222', length: 102, strokeWidth: 6, index: .555, spacing: 0.1, value: hours / 12},
-        {
-          field: 'minutes',
-          color: '#222',
-          length: 154,
-          strokeWidth: 3,
-          index: .597,
-          spacing: 0.115,
-          value: minutes / 60
-        },
-        {
-          field: 'seconds',
-          color: '#222',
-          length: 180,
-          strokeWidth: 1.5,
-          index: .6348,
-          spacing: 0.015,
-          value: seconds / 60
-        }
-      ]
-    }
-
-    d3.timer(tick);
 
     // setter getter
+    chart.margins = function (_) {
+      return arguments.length ? (margins = _, chart) : margins;
+    };
+    chart.data = function (_) {
+      return arguments.length ? (data = _, chart) : data;
+    };
     return chart;
-  }
+  };
 }));

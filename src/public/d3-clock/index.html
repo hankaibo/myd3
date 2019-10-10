@@ -32,13 +32,25 @@
     fill: #444;
   }
 
-  path.orbit {
+  .dial {
+    fill: #fff;
+    stroke: #785ea5;
+    stroke-width: 2;
+  }
+
+  .dial-center {
+    fill: #c22
+  }
+
+  .dial-arc {
     fill: #785ea5;
   }
 
   .hour text {
     fill: #222;
     font-size: 16px;
+    text-anchor: middle; /* 文本水平居中 */
+    dominant-baseline: middle; /* 文本垂直居中 */
   }
 
   .hour line {
@@ -55,13 +67,59 @@
     stroke: #785ea5;
   }
 
+
   </style>
 </head>
 <body>
-<svg class="demo" width="960" height="500"></svg>
+
+<button>上午</button>
+<button>下午</button>
+
+<svg class="demo" width="600" height="250"></svg>
 <script>
-var t = clock();
-d3.select('.demo').call(t);
-</script>
+var t = Clock();
+var data = [
+    {
+        "name": "上午",
+        "value": 33,
+        "maxHour": 10,
+        "maxValue": 3,
+        "startTime": 8,
+        "endTime": 12
+    },
+    {
+        "name": "下午",
+        "value": 44,
+        "maxHour": 15,
+        "maxValue": 3,
+        "startTime": 13,
+        "endTime": 18
+    },
+    {
+        "name": "晚上",
+        "value": 54,
+        "maxHour": 20,
+        "maxValue": 3,
+        "startTime": 18,
+        "endTime": 22
+    },
+    {
+        "name": "凌晨",
+        "value": 90,
+        "maxHour": 2,
+        "maxValue": 30,
+        "startTime": 1,
+        "endTime": 6
+    },
+    {
+        "name": "午夜",
+        "value": 90,
+        "maxHour": 2,
+        "maxValue": 30,
+        "startTime": 1,
+        "endTime": 6
+    }
+];
+d3.select('.demo').call(t.data(data))</script>
 </body>
 </html>
